@@ -1,0 +1,41 @@
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+*.sdf
+*.opensdf
+*.suo
+build/CFortranTranslator/Debug/
+build/CFortranTranslator/Release/
+build/CFortranTranslator/x64/
+build/.vs/
+build/x64/
+build/Debug/
+build/Release/
+*.opendb
+*.db
