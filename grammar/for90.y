@@ -19,6 +19,7 @@ extern void release_buff();
 %token YY_IF YY_THEN YY_ELSE YY_END YY_DO YY_CONTINUE YY_WHILE YY_WHERE YY_CASE
 %token YY_PROGRAM YY_FUNCTION YY_RECURSIVE YY_RESULT YY_SUBROUTINE YY_MODULE YY_BLOCK
 %token YY_IMPLICIT YY_NONE YY_USE YY_PARAMETER YY_FORMAT YY_ENTRY
+%token YY_INTEGER_T YY_FLOAT_T YY_STRING_T YY_COMPLEX_T YY_BOOL_T
 
 %type <fs> YY_INTEGER
 %type <fs> YY_FLOAT
@@ -26,6 +27,8 @@ extern void release_buff();
 %type <fs> YY_OPERATOR
 %type <fs> YY_STRING
 %type <fs> YY_ILLEGAL
+%type <fs> YY_COMPLEX
+
 
 %left '='
 %left YY_OROR
@@ -34,8 +37,8 @@ extern void release_buff();
 %left YY_GT YY_GE YY_LE YY_LT
 %left '+' '-' 
 %left '*' '/' 
-$left YY_POWER
-$left YY_NEG YY_NOT
+%left YY_POWER
+%right YY_NEG YY_NOT
 
 %start stmt
 
@@ -48,6 +51,8 @@ $left YY_NEG YY_NOT
 			{printf("string "); }
 		| YY_WORD
 			{printf("word "); }
+        | YY_COMPLEX
+            {printf("complex " );}
 
 	exp : '(' exp ')'
 			{ printf("bracket "); }
@@ -61,22 +66,45 @@ $left YY_NEG YY_NOT
 			{ printf("/ "); }
 		| exp YY_POWER exp
 			{ printf("** "); }
+        | '-' exp %prec YY_NEG
+            { printf("neg "); }
 		| literal
             { printf("literal ");}
 
 	stmt : exp
-        | if_stmt
+        | compound_stmt
+
+    type_spec : YY_INTEGER_T
+        | YY_FLOAT_T
+        | YY_STRING_T 
+        | YY_COMPLEX_T
+        | YY_BOOL_T
+
+    var_def : type_spec YY_DOUBLECOLON argtable
+
+    argtable : YY_WORD
+        | YY_WORD '=' exp
+        | YY_WORD ',' argtable        
+        | YY_WORD '=' exp
+        | YY_WORD '=' exp ',' argtable
+
+    compound_stmt : if_stmt
 
 	if_stmt : YY_IF exp YY_THEN stmt YY_END YY_IF
 			{printf("if .. end if"); }
 		| YY_IF exp YY_THEN stmt YY_ELSE stmt YY_END YY_IF
 			{printf("if .. else .. end if"); }
 		| YY_IF exp YY_THEN stmt elseif_stmt YY_END YY_IF
-			{printf("if .. else if ... end if"); }
+			{printf("if .. else if ... end if "); }
 		| YY_IF exp YY_THEN stmt elseif_stmt YY_ELSE stmt YY_END YY_IF
 			{printf("if .. else if .. else end if"); }
 	elseif_stmt : YY_ELSE YY_IF exp YY_THEN stmt
 		| YY_ELSE YY_IF exp YY_THEN stmt elseif_stmt
+
+    stmts : stmt
+        | stmt stmts
+
+    program : YY_PROGRAM YY_WORD stmts YY_END YY_PROGRAM YY_WORD
 
 %%
 //extern "C" int yylex();

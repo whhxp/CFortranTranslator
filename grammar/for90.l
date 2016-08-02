@@ -27,7 +27,7 @@ int make_term_flex(const TokenMeta & token, const char * w);
 // 对于非char运算符要预先解析
 #define YYRTOP(TOK, YYTOK) update_flex(yyleng); yylval = flex_state; yylval.CurrentTerm = Term{TOK, std::string(yytext)}; return YYTOK; 
 // include literal const such as pi, true, false, etc.
-#define YYRTWORD(TOK) update_flex(yyleng); yylval = flex_state; yylval.CurrentTerm = Term{TOK, std::string(yytext)}; return word_parse(yylval); 
+#define YYRTWORD() update_flex(yyleng); yylval = flex_state; yylval.CurrentTerm = Term{TokenMeta::META_ANY, std::string(yytext)}; return word_parse(yylval); 
 #define YYRTINT(TOK) update_flex(yyleng); yylval = flex_state; yylval.CurrentTerm = Term{TOK, std::string(yytext)};  return YY_INTEGER;
 #define YYRTFLOAT(TOK) update_flex(yyleng); yylval = flex_state; yylval.CurrentTerm = Term{TOK, std::string(yytext)}; return YY_FLOAT; 
 #define YYRTSTRING(TOK) update_flex(yyleng); yylval = flex_state; yylval.CurrentTerm = Term{TOK, std::string(yytext)}; return YY_STRING; 
@@ -91,25 +91,20 @@ newline [\r\n]
 {ws} {RTNOP(void) }
 [-+]?[0-9]+ {RTINT(TokenMeta::META_INTEGER) }
 [-+]?[0-9\.]+([eE][0-9\.]+)? {RTFLOAT(TokenMeta::META_FLOAT) }
-[a-zA-Z_][a-zA-Z0-9]* { RTWORD(TokenMeta::META_WORD) }
-\.true\. {RTN(TokenMeta::True, YY_TRUE) }
-\.false\. {RTN(TokenMeta::False, YY_FALSE) }
+[a-zA-Z_][a-zA-Z0-9]* { RTWORD() }
 "**" {RTOP(TokenMeta::Power, YY_POWER) }
-(>|\.gt\.) {RTOP(TokenMeta::GT, YY_GT) }
-(>=|\.ge\.) {RTOP(TokenMeta::GE, YY_GE )}
-(<|\.lt\.) {RTOP(TokenMeta::LT, YY_LT)}
-(<=|\.le\.) {RTOP(TokenMeta::LE, YY_LE)}
-(==|\.eq\.) {RTOP(TokenMeta::EQ, YY_EQ) }
-("/="|\.ne\.) {RTOP(TokenMeta::NEQ, YY_NEQ)}
-\.and\. {RTOP(TokenMeta::AndAnd, YY_ANDAND) }
-\.or\. {RTOP(TokenMeta::OrOr, YY_OROR) }
-\.not\. {RTOP(TokenMeta::Not, YY_NOT) }
-\.eqv\. {RTOP(TokenMeta::EQV, YY_EQV) }
-\.neqv\. {RTOP(TokenMeta::NEQV, YY_NEQV) }
+">" {RTOP(TokenMeta::GT, YY_GT) }
+">=" {RTOP(TokenMeta::GE, YY_GE )}
+"<" {RTOP(TokenMeta::LT, YY_LT)}
+"<=" {RTOP(TokenMeta::LE, YY_LE)}
+"==" {RTOP(TokenMeta::EQ, YY_EQ) }
+"/=" {RTOP(TokenMeta::NEQ, YY_NEQ)}
+\.[a-zA-Z_][a-zA-Z0-9]*\. { RTWORD() }
 :: {RTOP(TokenMeta::DoubleColon, YY_DOUBLECOLON)}
 \"(\\.|[^"])*\" {RTSTRING(TokenMeta::META_STRING) 
 /* The delimiting quotes are escaped because they are Flex meta-characters. */}
 . {/* can be parsed, including some operators not listed */ RTILLEGAL(TokenMeta::META_ILLEGAL) }
+
 %%
 
 int yywrap() 
@@ -133,70 +128,140 @@ int word_parse(YYSTYPE & fs) {
 	transform(fs.CurrentTerm.what.begin(), fs.CurrentTerm.what.end(), fs.CurrentTerm.what.begin(), tolower);
 	const string & s = fs.CurrentTerm.what;
 	if (s == "if") {
+		yylval.CurrentTerm = Term{ TokenMeta::If, std::string(yytext) };
 		return YY_IF;
 	}
 	else if (s == "then") {
+		yylval.CurrentTerm = Term{ TokenMeta::META_ANY, std::string(yytext) };
 		return YY_THEN;
 	}
 	else if (s == "else") {
+		yylval.CurrentTerm = Term{ TokenMeta::Else, std::string(yytext) };
 		return YY_ELSE;
 	}
 	else if (s == "end") {
+		yylval.CurrentTerm = Term{ TokenMeta::META_ANY, std::string(yytext) };
 		return YY_END;
 	}
 	else if (s == "do") {
+		yylval.CurrentTerm = Term{ TokenMeta::Do, std::string(yytext) };
 		return YY_DO;
 	}
 	else if (s == "continue") {
+		yylval.CurrentTerm = Term{ TokenMeta::Continue, std::string(yytext) };
 		return YY_CONTINUE;
 	}
 	else if (s == "while") {
+		yylval.CurrentTerm = Term{ TokenMeta::While, std::string(yytext) };
 		return YY_WHILE;
 	}
 	else if (s == "where") {
+		yylval.CurrentTerm = Term{ TokenMeta::META_ANY, std::string(yytext) };
 		return YY_WHERE;
 	}
 	else if (s == "case") {
+		yylval.CurrentTerm = Term{ TokenMeta::Case, std::string(yytext) };
 		return YY_CASE;
 	}
 	else if (s == "program") {
+		yylval.CurrentTerm = Term{ TokenMeta::META_ANY, std::string(yytext) };
 		return YY_PROGRAM;
 	}
 	else if (s == "function") {
+		yylval.CurrentTerm = Term{ TokenMeta::META_ANY, std::string(yytext) };
 		return YY_FUNCTION;
 	}
 	else if (s == "recursive") {
+		yylval.CurrentTerm = Term{ TokenMeta::META_ANY, std::string(yytext) };
 		return YY_RECURSIVE;
 	}
 	else if (s == "result") {
+		yylval.CurrentTerm = Term{ TokenMeta::META_ANY, std::string(yytext) };
 		return YY_RESULT;
 	}
 	else if (s == "subroutine") {
+		yylval.CurrentTerm = Term{ TokenMeta::META_ANY, std::string(yytext) };
 		return YY_SUBROUTINE;
 	}
 	else if (s == "module") {
+		yylval.CurrentTerm = Term{ TokenMeta::META_ANY, std::string(yytext) };
 		return YY_MODULE;
 	}
 	else if (s == "block") {
+		yylval.CurrentTerm = Term{ TokenMeta::META_ANY, std::string(yytext) };
 		return YY_BLOCK;
 	}
 	else if (s == "implicit") {
+		yylval.CurrentTerm = Term{ TokenMeta::META_ANY, std::string(yytext) };
 		return YY_IMPLICIT;
 	}
 	else if (s == "none") {
+		yylval.CurrentTerm = Term{ TokenMeta::META_ANY, std::string(yytext) };
 		return YY_NONE;
 	}
 	else if (s == "use") {
+		yylval.CurrentTerm = Term{ TokenMeta::META_ANY, std::string(yytext) };
 		return YY_USE;
 	}
 	else if (s == "parameter") {
+		yylval.CurrentTerm = Term{ TokenMeta::META_ANY, std::string(yytext) };
 		return YY_PARAMETER;
 	}
 	else if (s == "format") {
+		yylval.CurrentTerm = Term{ TokenMeta::META_ANY, std::string(yytext) };
 		return YY_FORMAT;
 	}
-	else if (s == "entry") {
-		return YY_ENTRY;
+	else if (s == ".and.") {
+		yylval.CurrentTerm = Term{ TokenMeta::AndAnd, std::string(yytext) };
+		return YY_ANDAND;
+	}
+	else if (s == ".or.") {
+		yylval.CurrentTerm = Term{ TokenMeta::OrOr, std::string(yytext) };
+		return YY_OROR;
+	}
+	else if (s == ".not.") {
+		yylval.CurrentTerm = Term{ TokenMeta::Not, std::string(yytext) };
+		return YY_NOT;
+	}
+	else if (s == ".eqv.") {
+		yylval.CurrentTerm = Term{ TokenMeta::META_ANY, std::string(yytext) };
+		return YY_EQV;
+	}
+	else if (s == ".neqv") {
+		yylval.CurrentTerm = Term{ TokenMeta::META_ANY, std::string(yytext) };
+		return YY_NEQV;
+	}
+	else if (s == ".true.") {
+		yylval.CurrentTerm = Term{ TokenMeta::True, std::string(yytext) };
+		return YY_TRUE;
+	}
+	else if (s == ".false.") {
+		yylval.CurrentTerm = Term{ TokenMeta::False, std::string(yytext) };
+		return YY_FALSE;
+	}
+	else if (s == ".gt.") {
+		yylval.CurrentTerm = Term{ TokenMeta::GT, std::string(yytext) };
+		return YY_GT;
+	}
+	else if (s == ".ge.") {
+		yylval.CurrentTerm = Term{ TokenMeta::GE, std::string(yytext) };
+		return YY_GE;
+	}
+	else if (s == ".lt.") {
+		yylval.CurrentTerm = Term{ TokenMeta::LT, std::string(yytext) };
+		return YY_LT;
+	}
+	else if (s == ".le.") {
+		yylval.CurrentTerm = Term{ TokenMeta::LE, std::string(yytext) };
+		return YY_LE;
+	}
+	else if (s == ".eq.") {
+		yylval.CurrentTerm = Term{ TokenMeta::EQ, std::string(yytext) };
+		return YY_EQ;
+	}
+	else if (s == ".neq.") {
+		yylval.CurrentTerm = Term{ TokenMeta::NEQ, std::string(yytext) };
+		return YY_NEQ;
 	}
 	else {
 		return YY_WORD;
