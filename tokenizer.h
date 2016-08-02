@@ -28,6 +28,12 @@ struct FlexState {
 };
 FlexState next_token(const std::string & in_str, int start = 0); 
 FlexState iter_token(const std::string & in_str, int start);
+struct KeywordMeta {
+	std::string what;
+	int token;
+	int yytoken;
+};
+extern const KeywordMeta keywords[34];
 
 // yacc part code
 // implement in for90.y
