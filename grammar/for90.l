@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <cctype>
 #include <map>
+#include <boost/algorithm/string.hpp>
 #include "../tokenizer.h"
 #include "../parser.h"
 
@@ -40,7 +41,7 @@ int code_pos = 0;
 
 #define RTN(TOK, YYTOK) YYRTN(TOK, YYTOK) 
 #define RTOP(TOK, YYTOK) YYRTOP(TOK, YYTOK)
-#define RTWORD() YYRTWORD();
+#define RTWORD() YYRTWORD()
 #define RTINT(TOK) YYRTINT(TOK)
 #define RTFLOAT(TOK) YYRTFLOAT(TOK)
 #define RTSTRING(TOK) YYRTSTRING(TOK)
@@ -89,20 +90,24 @@ ws      {delim}+
 newline [\r\n]
 
 %%
+
 {newline} {RTCRLF() }
 {ws} {RTNOP() }
 [-+]?[0-9]+ {RTINT(TokenMeta::META_INTEGER) }
 [-+]?[0-9\.]+([eE][0-9\.]+)? {RTFLOAT(TokenMeta::META_FLOAT) }
-[a-zA-Z_][a-zA-Z0-9]* { RTWORD() }
+:: {RTOP(TokenMeta::DoubleColon, YY_DOUBLECOLON)}
 "**" {RTOP(TokenMeta::Power, YY_POWER) }
 ">" {RTOP(TokenMeta::GT, YY_GT) }
-">=" {RTOP(TokenMeta::GE, YY_GE )}
+">=" {RTOP(TokenMeta::GE, YY_GE)}
 "<" {RTOP(TokenMeta::LT, YY_LT)}
 "<=" {RTOP(TokenMeta::LE, YY_LE)}
 "==" {RTOP(TokenMeta::EQ, YY_EQ) }
 "/=" {RTOP(TokenMeta::NEQ, YY_NEQ)}
+[Ee][Ll][Ss][Ee]{ws}[Ii][Ff] {RTWORD()}
+[Ee][Nn][Dd]{ws}[Ii][Ff] {RTWORD()}
+[Ee][Nn][Dd]{ws}[Pp][Rr][Oo][Gg][Rr][Aa][Mm] {RTWORD()}
+[a-zA-Z_][a-zA-Z0-9]* { RTWORD() }
 \.[a-zA-Z_][a-zA-Z0-9]*\. { RTWORD() }
-:: {RTOP(TokenMeta::DoubleColon, YY_DOUBLECOLON)}
 \"(\\.|[^"])*\" {RTSTRING(TokenMeta::META_STRING) 
 /* The delimiting quotes are escaped because they are Flex meta-characters. */}
 . {/* can be parsed, including some operators not listed */ RTILLEGAL(TokenMeta::META_ILLEGAL) }
@@ -139,6 +144,7 @@ int word_parse() {
 	FlexState & fs = yylval.fs;
 	string yytextstr = string(yytext);
 	transform(yytextstr.begin(), yytextstr.end(), yytextstr.begin(), tolower);
+	yytextstr.erase(remove_if(yytextstr.begin(), yytextstr.end(), isspace), yytextstr.end());
 	for (int i = 0; i < keywords.size(); i++)
 	{
 		if (keywords[i].what == yytextstr) {
