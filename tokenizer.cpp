@@ -5,6 +5,10 @@
 using namespace std;
 
 const KeywordMeta keywords[] = {
+	// .what keyword
+	// .token keyword as intent
+	// .yytoken yacc terminal
+
 	KeywordMeta{"if"
 		, TokenMeta::If
 		, YY_IF
@@ -140,6 +144,48 @@ const KeywordMeta keywords[] = {
 	, KeywordMeta{".neq."
 		, TokenMeta::NEQ
 		, YY_NEQ
+	}
+	, KeywordMeta{ "real"
+		, TokenMeta::META_ANY
+		// YY_FLOAT 指的是一个float类型的常量
+		// YY_FLOAT_T 是float类型声明符
+		, YY_FLOAT_T
+	}
+	, KeywordMeta{ "integer"
+		, TokenMeta::META_ANY
+		, YY_INTEGER_T
+	}
+	, KeywordMeta{ "logical"
+		, TokenMeta::META_ANY
+		, YY_BOOL_T
+	}
+	, KeywordMeta{ "complex"
+		, TokenMeta::META_ANY
+		, YY_COMPLEX_T
+	}
+	, KeywordMeta{ "character"
+		, TokenMeta::META_ANY
+		, YY_STRING_T
+	}
+	, KeywordMeta{ "print"
+		, TokenMeta::META_ANY
+		, YY_PRINT
+	}
+	, KeywordMeta{ "write"
+		, TokenMeta::META_ANY
+		, YY_WRITE
+	}
+	, KeywordMeta{ "read"
+		, TokenMeta::META_ANY
+		, YY_READ
+	}
+	, KeywordMeta{ "open"
+		, TokenMeta::META_ANY
+		, YY_OPEN
+	}
+	, KeywordMeta{ "close"
+		, TokenMeta::META_ANY
+		, YY_CLOSE
 	}
 };
 

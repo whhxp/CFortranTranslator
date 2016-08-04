@@ -6,35 +6,35 @@
 #include <algorithm>
 #include <cctype>
 #include "../tokenizer.h"
-#include "for90.flex.h"
+#include "../parser.h"
 
 	// 前置声明
 #ifdef USE_YACC
 #include "for90.tab.h"
 //#define YY_DECL extern "C" int yylex()
 //#define YYSTYPE FlexState
-int word_parse(YYSTYPE & fs);
+int word_parse(FlexState & fs);
 #else
 
 #endif
-void update_flex(int len, bool newline = false);
+void update_yylval(int len, Term & current_term, bool newline = false);
 int make_term_flex(const TokenMeta & token, const char * w);
 
 #ifdef USE_YACC
 // yacc
 // USE WHTN USE YACC EITHER
-#define YYRTN(TOK, YYTOK) update_flex(yyleng); yylval = flex_state; yylval.CurrentTerm = Term{TOK, std::string(yytext)}; return YYTOK; 
+#define YYRTN(TOK, YYTOK) update_yylval(yyleng, Term{TOK, std::string(yytext)});	 return YYTOK; 
 // 对于非char运算符要预先解析
-#define YYRTOP(TOK, YYTOK) update_flex(yyleng); yylval = flex_state; yylval.CurrentTerm = Term{TOK, std::string(yytext)}; return YYTOK; 
+#define YYRTOP(TOK, YYTOK) update_yylval(yyleng, Term{TOK, std::string(yytext)});    return YYTOK; 
 // include literal const such as pi, true, false, etc.
-#define YYRTWORD() update_flex(yyleng); yylval = flex_state; yylval.CurrentTerm = Term{TokenMeta::META_ANY, std::string(yytext)}; return word_parse(yylval); 
-#define YYRTINT(TOK) update_flex(yyleng); yylval = flex_state; yylval.CurrentTerm = Term{TOK, std::string(yytext)};  return YY_INTEGER;
-#define YYRTFLOAT(TOK) update_flex(yyleng); yylval = flex_state; yylval.CurrentTerm = Term{TOK, std::string(yytext)}; return YY_FLOAT; 
-#define YYRTSTRING(TOK) update_flex(yyleng); yylval = flex_state; yylval.CurrentTerm = Term{TOK, std::string(yytext)}; return YY_STRING; 
+#define YYRTWORD() update_yylval(yyleng, Term{TokenMeta::META_ANY, std::string(yytext)});  	return word_parse(yylval.fs); 
+#define YYRTINT(TOK) update_yylval(yyleng, Term{TOK, std::string(yytext)});   	return YY_INTEGER;
+#define YYRTFLOAT(TOK) update_yylval(yyleng, Term{TOK, std::string(yytext)});   	return YY_FLOAT; 
+#define YYRTSTRING(TOK) update_yylval(yyleng, Term{TOK, std::string(yytext)});  	return YY_STRING; 
 // 规则中被定义的终结符, **包括ascii表内的单个字符**
-#define YYRTILLEGAL(TOK) update_flex(1); yylval = flex_state; yylval.CurrentTerm = Term{TOK, std::string(yytext)}; return yytext[0]; 
-#define YYRTCRLF(TOK) update_flex(yyleng, true);
-#define YYRTNOP(TOK) update_flex(yyleng);
+#define YYRTILLEGAL(TOK) update_yylval(1, Term{TOK, std::string(yytext)});  	return yytext[0]; 
+#define YYRTCRLF() update_yylval(yyleng, Term{TokenMeta::CRLF, std::string(yytext)}, true);
+#define YYRTNOP() update_yylval(yyleng, Term{TokenMeta::Nop, std::string(yytext)});
 
 #define RTN(TOK, YYTOK) YYRTN(TOK, YYTOK) 
 #define RTOP(TOK, YYTOK) YYRTOP(TOK, YYTOK)
@@ -44,9 +44,9 @@ int make_term_flex(const TokenMeta & token, const char * w);
 #define RTSTRING(TOK) YYRTSTRING(TOK)
 #define RTILLEGAL(TOK) YYRTILLEGAL(TOK)
 // 换行
-#define RTCRLF(TOK) YYRTCRLF(TOK)
+#define RTCRLF() YYRTCRLF()
 // 空格, 制表符等
-#define RTNOP(TOK) YYRTNOP(TOK)
+#define RTNOP() YYRTNOP()
 #else
 // more spectific
 // DO **NOT** USE WHEN USE YACC EITHER
@@ -57,8 +57,8 @@ int make_term_flex(const TokenMeta & token, const char * w);
 #define NYRTFLOAT(TOK) update_flex(yyleng); return make_term_flex(TokenMeta::META_FLOAT, yytext); 
 #define NYRTSTRING(TOK) update_flex(yyleng); return make_term_flex(TokenMeta::META_STRING, yytext); 
 #define NYRTILLEGAL(TOK) update_flex(1); return make_term_flex(TokenMeta::META_ILLEGAL, yytext); 
-#define NYRTCRLF(TOK) update_flex(yyleng, true);  /*DO NOT RETURN, CONTINUE yylex*/
-#define NYRTNOP(TOK) update_flex(yyleng); /*DO NOT RETURN*/
+#define NYRTCRLF() update_flex(yyleng, true);  /*DO NOT RETURN, CONTINUE yylex*/
+#define NYRTNOP() update_flex(yyleng); /*DO NOT RETURN*/
 
 #define RTN(TOK, YYTOK) NYRTN(TOK)
 #define RTOP(TOK, YYTOK) NYRTOP(TOK)
@@ -67,17 +67,14 @@ int make_term_flex(const TokenMeta & token, const char * w);
 #define RTFLOAT(TOK) NYRTFLOAT(TOK)
 #define RTSTRING(TOK) NYRTSTRING(TOK)
 #define RTILLEGAL(TOK) NYRTILLEGAL(TOK)
-#define RTCRLF(TOK) NYRTCRLF(TOK)
-#define RTNOP(TOK) NYRTNOP(TOK)
+#define RTCRLF() NYRTCRLF()
+#define RTNOP() NYRTNOP()
 #endif // USE_YACC
 
 
 FlexState flex_state;
 #ifdef USE_YACC
-int parse_pos;
-int parse_line;
-int parse_len;
-int line_pos;
+
 #else
 
 #endif
@@ -87,8 +84,8 @@ ws      {delim}+
 newline [\r\n]
 
 %%
-{newline} {RTCRLF(void) }
-{ws} {RTNOP(void) }
+{newline} {RTCRLF() }
+{ws} {RTNOP() }
 [-+]?[0-9]+ {RTINT(TokenMeta::META_INTEGER) }
 [-+]?[0-9\.]+([eE][0-9\.]+)? {RTFLOAT(TokenMeta::META_FLOAT) }
 [a-zA-Z_][a-zA-Z0-9]* { RTWORD() }
@@ -111,26 +108,28 @@ int yywrap()
 { 
    return(1); 
 }
-void update_flex(int len, bool newline){
+void update_yylval(int len, Term & current_term, bool newline){
 	if(newline){
-		flex_state.parse_line++; flex_state.line_pos = 0; flex_state.parse_pos = 0;
+		flex_state.parse_line++; flex_state.line_pos = 0; flex_state.parse_pos = 0; flex_state.parse_len = 0;
 	}else{
-		flex_state.parse_pos += len; flex_state.line_pos += len;
+		flex_state.parse_pos += flex_state.parse_len; flex_state.line_pos += flex_state.parse_len; flex_state.parse_len = yyleng;
 	}
+	yylval.fs = flex_state;
+	yylval.fs.CurrentTerm = current_term;
 }
 int make_term_flex(const TokenMeta & token, const char * w) {
 	flex_state.CurrentTerm = Term{ token, std::string(w) };
 	return token;
 }
 #ifdef USE_YACC
-int word_parse(YYSTYPE & fs) {
+int word_parse(FlexState & fs) {
 	using namespace std;
 	transform(fs.CurrentTerm.what.begin(), fs.CurrentTerm.what.end(), fs.CurrentTerm.what.begin(), tolower);
 	const string & s = fs.CurrentTerm.what;
 	for (int i = 0; i < sizeof(keywords) / sizeof(KeywordMeta); i++)
 	{
 		if (keywords[i].what == s) {
-			yylval.CurrentTerm = Term{ keywords[i].token , std::string(yytext) };
+			fs.CurrentTerm = Term{ keywords[i].token , std::string(yytext) };
 			return keywords[i].yytoken;
 		}
 	}
