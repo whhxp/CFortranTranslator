@@ -362,8 +362,8 @@ static void yy_fatal_error (yyconst char msg[]  );
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
 
-#define YY_NUM_RULES 18
-#define YY_END_OF_BUFFER 19
+#define YY_NUM_RULES 19
+#define YY_END_OF_BUFFER 20
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -371,13 +371,14 @@ struct yy_trans_info
 	flex_int32_t yy_verify;
 	flex_int32_t yy_nxt;
 	};
-static yyconst flex_int16_t yy_accept[51] =
+static yyconst flex_int16_t yy_accept[52] =
     {   0,
-        0,    0,   19,   17,    2,    1,    1,   17,   17,   17,
-        4,   17,    3,   17,    9,   17,    7,   14,   14,    2,
-        0,   16,    0,    6,    4,    3,    0,    0,   12,    0,
-        5,   10,   11,    8,   14,   14,    0,   16,    0,   15,
-        0,    4,    4,    4,   14,   14,    0,    0,   13,    0
+        0,    0,   20,   18,    2,    1,    1,   18,   18,   18,
+        4,   18,    3,   18,    9,   18,    7,   15,   15,   13,
+        2,    0,   17,    0,    6,    4,    3,    0,    0,   12,
+        0,    5,   10,   11,    8,   15,   15,    0,   17,    0,
+       16,    0,    4,    4,    4,   15,   15,    0,    0,   14,
+        0
     } ;
 
 static yyconst flex_int32_t yy_ec[256] =
@@ -395,7 +396,7 @@ static yyconst flex_int32_t yy_ec[256] =
 
        16,   17,   15,   15,   18,   15,   15,   19,   15,   15,
        15,   15,   15,   15,   20,   15,   15,   15,   15,   15,
-       15,   15,    1,    1,    1,    1,    1,    1,    1,    1,
+       15,   15,    1,    1,    1,   23,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -412,65 +413,65 @@ static yyconst flex_int32_t yy_ec[256] =
         1,    1,    1,    1,    1
     } ;
 
-static yyconst flex_int32_t yy_meta[23] =
+static yyconst flex_int32_t yy_meta[24] =
     {   0,
         1,    1,    1,    1,    1,    1,    1,    2,    1,    3,
         1,    1,    1,    1,    3,    3,    3,    3,    3,    3,
-        1,    4
+        1,    4,    1
     } ;
 
-static yyconst flex_int16_t yy_base[56] =
+static yyconst flex_int16_t yy_base[57] =
     {   0,
-        0,    0,   90,   91,   87,   91,   91,   18,   82,   16,
-       17,   74,   20,   75,   72,   57,   55,    0,   48,   64,
-       24,   91,   29,   91,   27,   30,   57,   34,   91,   39,
-       91,   91,   91,   91,    0,   43,   36,   43,   48,   91,
-       54,   44,    0,   48,   45,   58,   53,   42,   91,   91,
-       71,   74,   28,   78,   81
+        0,    0,   91,   92,   88,   92,   92,   19,   83,   17,
+       18,   75,   21,   76,   73,   58,   56,    0,   49,   92,
+       65,   25,   92,   30,   92,   28,   31,   58,   35,   92,
+       40,   92,   92,   92,   92,    0,   44,   37,   44,   49,
+       92,   55,   45,    0,   49,   46,   59,   54,   43,   92,
+       92,   72,   75,   29,   79,   82
     } ;
 
-static yyconst flex_int16_t yy_def[56] =
+static yyconst flex_int16_t yy_def[57] =
     {   0,
-       50,    1,   50,   50,   50,   50,   50,   51,   50,   50,
-       52,   50,   50,   50,   50,   50,   50,   53,   53,   50,
-       51,   50,   54,   50,   50,   50,   55,   55,   50,   50,
-       50,   50,   50,   50,   53,   53,   51,   51,   54,   50,
-       55,   50,   28,   50,   53,   53,   50,   50,   50,    0,
-       50,   50,   50,   50,   50
+       51,    1,   51,   51,   51,   51,   51,   52,   51,   51,
+       53,   51,   51,   51,   51,   51,   51,   54,   54,   51,
+       51,   52,   51,   55,   51,   51,   51,   56,   56,   51,
+       51,   51,   51,   51,   51,   54,   54,   52,   52,   55,
+       51,   56,   51,   29,   51,   54,   54,   51,   51,   51,
+        0,   51,   51,   51,   51,   51
     } ;
 
-static yyconst flex_int16_t yy_nxt[114] =
+static yyconst flex_int16_t yy_nxt[116] =
     {   0,
         4,    5,    6,    7,    8,    9,   10,   11,   12,   13,
        14,   15,   16,   17,   18,   19,   18,   18,   18,   18,
-        4,   18,   22,   25,   25,   26,   25,   25,   22,   26,
-       35,   21,   28,   38,   25,   30,   25,   25,   23,   26,
-       22,   42,   30,   43,   23,   30,   44,   22,   44,   39,
-       21,   44,   38,   44,   47,   44,   23,   44,   49,   47,
-       46,   40,   45,   23,   40,   20,   36,   34,   39,   33,
-       48,   21,   21,   21,   21,   27,   27,   27,   37,   37,
-       37,   37,   41,   41,   32,   31,   29,   24,   20,   50,
-        3,   50,   50,   50,   50,   50,   50,   50,   50,   50,
+        4,   18,   20,   23,   26,   26,   27,   26,   26,   23,
+       27,   36,   22,   29,   39,   26,   31,   26,   26,   24,
+       27,   23,   43,   31,   44,   24,   31,   45,   23,   45,
+       40,   22,   45,   39,   45,   48,   45,   24,   45,   50,
+       48,   47,   41,   46,   24,   41,   21,   37,   35,   40,
+       34,   49,   22,   22,   22,   22,   28,   28,   28,   38,
+       38,   38,   38,   42,   42,   33,   32,   30,   25,   21,
+       51,    3,   51,   51,   51,   51,   51,   51,   51,   51,
 
-       50,   50,   50,   50,   50,   50,   50,   50,   50,   50,
-       50,   50,   50
+       51,   51,   51,   51,   51,   51,   51,   51,   51,   51,
+       51,   51,   51,   51,   51
     } ;
 
-static yyconst flex_int16_t yy_chk[114] =
+static yyconst flex_int16_t yy_chk[116] =
     {   0,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    8,   10,   11,   10,   11,   13,   21,   13,
-       53,   23,   11,   23,   25,   13,   25,   26,    8,   26,
-       37,   28,   25,   28,   21,   26,   30,   38,   30,   23,
-       39,   42,   39,   42,   47,   44,   37,   44,   48,   46,
-       45,   41,   36,   38,   27,   20,   19,   17,   39,   16,
-       47,   51,   51,   51,   51,   52,   52,   52,   54,   54,
-       54,   54,   55,   55,   15,   14,   12,    9,    5,    3,
-       50,   50,   50,   50,   50,   50,   50,   50,   50,   50,
+        1,    1,    1,    8,   10,   11,   10,   11,   13,   22,
+       13,   54,   24,   11,   24,   26,   13,   26,   27,    8,
+       27,   38,   29,   26,   29,   22,   27,   31,   39,   31,
+       24,   40,   43,   40,   43,   48,   45,   38,   45,   49,
+       47,   46,   42,   37,   39,   28,   21,   19,   17,   40,
+       16,   48,   52,   52,   52,   52,   53,   53,   53,   55,
+       55,   55,   55,   56,   56,   15,   14,   12,    9,    5,
+        3,   51,   51,   51,   51,   51,   51,   51,   51,   51,
 
-       50,   50,   50,   50,   50,   50,   50,   50,   50,   50,
-       50,   50,   50
+       51,   51,   51,   51,   51,   51,   51,   51,   51,   51,
+       51,   51,   51,   51,   51
     } ;
 
 static yy_state_type yy_last_accepting_state;
@@ -511,25 +512,25 @@ int word_parse();
 #endif
 void update_flex(int len, bool newline = false); // do not update CurrentTerm
 void update_yylval(Term & current_term, bool empty = false);
+extern std::string global_code;
 int make_term_flex(const TokenMeta & token, const char * w);
-int code_pos = 0;
 
 #ifdef USE_YACC
 // yacc
 // USE WHTN USE YACC EITHER
-#define YYRTN(TOK, YYTOK) update_flex(yyleng); update_yylval(Term{TOK, std::string(yytext)});	 return YYTOK; 
+#define YYRTN(TOK, YYTOK)  update_yylval(Term{TOK, std::string(yytext)});	update_flex(yyleng);  return YYTOK; 
 // 对于非char运算符要预先解析
-#define YYRTOP(TOK, YYTOK) update_flex(yyleng); update_yylval(Term{TOK, std::string(yytext)});    return YYTOK; 
+#define YYRTOP(TOK, YYTOK) update_yylval(Term{TOK, std::string(yytext)});  update_flex(yyleng);  return YYTOK; 
 // include literal const such as pi, true, false, etc.
-#define YYRTWORD() { update_flex(yyleng); /*do not update yylval because some tokens need to be looked ahead, such as `else if` */ int p = word_parse(); if (p != YY_REQ_MORE) { return p; } }
+#define YYRTWORD() {  /*do not update yylval because some tokens need to be looked ahead, such as `else if` */ int p = word_parse(); if (p != YY_REQ_MORE) { update_flex(yyleng); return p; } else{  /* ?? */ update_flex(yyleng); } }
 
-#define YYRTINT(TOK) update_flex(yyleng); update_yylval( Term{TOK, std::string(yytext)});   	return YY_INTEGER;
-#define YYRTFLOAT(TOK) update_flex(yyleng); update_yylval( Term{TOK, std::string(yytext)});   	return YY_FLOAT; 
-#define YYRTSTRING(TOK) update_flex(yyleng); update_yylval( Term{TOK, std::string(yytext)});  	return YY_STRING; 
+#define YYRTINT(TOK) YYRTN(TOK, YY_INTEGER) 
+#define YYRTFLOAT(TOK) YYRTN(TOK, YY_FLOAT) 
+#define YYRTSTRING(TOK) YYRTN(TOK, YY_STRING) 
 // 规则中被定义的终结符, **包括ascii表内的单个字符**
-#define YYRTILLEGAL(TOK) update_flex(1); update_yylval( Term{TOK, std::string(yytext)});  	return yytext[0]; 
-#define YYRTCRLF() update_flex(yyleng); update_yylval( Term{TokenMeta::CRLF, std::string(yytext)});
-#define YYRTNOP() update_flex(yyleng); update_yylval( Term{TokenMeta::Nop, std::string(yytext)},  true);
+#define YYRTILLEGAL(TOK) update_yylval( Term{TOK, std::string(yytext)});  	 update_flex(1);	return yytext[0]; 
+#define YYRTCRLF()  update_yylval( Term{TokenMeta::CRLF, std::string(yytext)}); update_flex(yyleng);
+#define YYRTNOP() update_yylval( Term{TokenMeta::Nop, std::string(yytext)},  true);  update_flex(yyleng);
 
 #define RTN(TOK, YYTOK) YYRTN(TOK, YYTOK) 
 #define RTOP(TOK, YYTOK) YYRTOP(TOK, YYTOK)
@@ -573,7 +574,7 @@ FlexState flex_state;
 #else
 
 #endif
-#line 577 "for90.flex.cpp"
+#line 578 "for90.flex.cpp"
 
 #define INITIAL 0
 
@@ -755,7 +756,7 @@ YY_DECL
 #line 92 "for90.l"
 
 
-#line 759 "for90.flex.cpp"
+#line 760 "for90.flex.cpp"
 
 	if ( !(yy_init) )
 		{
@@ -814,13 +815,13 @@ yy_match:
 			while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 				{
 				yy_current_state = (int) yy_def[yy_current_state];
-				if ( yy_current_state >= 51 )
+				if ( yy_current_state >= 52 )
 					yy_c = yy_meta[(unsigned int) yy_c];
 				}
 			yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
 			++yy_cp;
 			}
-		while ( yy_base[yy_current_state] != 91 );
+		while ( yy_base[yy_current_state] != 92 );
 
 yy_find_action:
 		yy_act = yy_accept[yy_current_state];
@@ -908,12 +909,12 @@ YY_RULE_SETUP
 case 13:
 YY_RULE_SETUP
 #line 106 "for90.l"
-{RTWORD()}
+{yymore(); ECHO; putchar('\n'); }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
 #line 107 "for90.l"
-{ RTWORD() }
+{RTWORD()}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
@@ -921,23 +922,28 @@ YY_RULE_SETUP
 { RTWORD() }
 	YY_BREAK
 case 16:
-/* rule 16 can match eol */
 YY_RULE_SETUP
 #line 109 "for90.l"
+{ RTWORD() }
+	YY_BREAK
+case 17:
+/* rule 17 can match eol */
+YY_RULE_SETUP
+#line 110 "for90.l"
 {RTSTRING(TokenMeta::META_STRING) 
 /* The delimiting quotes are escaped because they are Flex meta-characters. */}
 	YY_BREAK
-case 17:
-YY_RULE_SETUP
-#line 111 "for90.l"
-{/* can be parsed, including some operators not listed */ RTILLEGAL(TokenMeta::META_ILLEGAL) }
-	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 113 "for90.l"
+#line 112 "for90.l"
+{/* can be parsed, including some operators not listed */ RTILLEGAL(TokenMeta::META_ILLEGAL) }
+	YY_BREAK
+case 19:
+YY_RULE_SETUP
+#line 114 "for90.l"
 ECHO;
 	YY_BREAK
-#line 941 "for90.flex.cpp"
+#line 947 "for90.flex.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1229,7 +1235,7 @@ static int yy_get_next_buffer (void)
 		while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 			{
 			yy_current_state = (int) yy_def[yy_current_state];
-			if ( yy_current_state >= 51 )
+			if ( yy_current_state >= 52 )
 				yy_c = yy_meta[(unsigned int) yy_c];
 			}
 		yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
@@ -1257,11 +1263,11 @@ static int yy_get_next_buffer (void)
 	while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 		{
 		yy_current_state = (int) yy_def[yy_current_state];
-		if ( yy_current_state >= 51 )
+		if ( yy_current_state >= 52 )
 			yy_c = yy_meta[(unsigned int) yy_c];
 		}
 	yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
-	yy_is_jam = (yy_current_state == 50);
+	yy_is_jam = (yy_current_state == 51);
 
 		return yy_is_jam ? 0 : yy_current_state;
 }
@@ -1931,7 +1937,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 112 "for90.l"
+#line 113 "for90.l"
 
 
 
@@ -1940,15 +1946,21 @@ int yywrap()
    return(1); 
 }
 
+int make_term_flex(const TokenMeta & token, const char * w) {
+	flex_state.CurrentTerm = Term{ token, std::string(w) };
+	return token;
+}
 void update_flex(int len, bool newline) {
 	if (newline) {
-		flex_state.parse_line++; flex_state.line_pos = 0; flex_state.parse_pos += len; flex_state.parse_len = 0;
+		flex_state.parse_line++; flex_state.line_pos = 0; flex_state.parse_pos += yyleng; flex_state.parse_len = 0;
 	}
 	else {
-		flex_state.parse_pos += len; flex_state.line_pos += flex_state.parse_len; flex_state.parse_len = yyleng;
+		flex_state.parse_pos += len; flex_state.line_pos += flex_state.parse_len; flex_state.parse_len = len;
 	}
 }
-void update_yylval(Term & current_term, bool empty){
+#ifdef USE_YACC
+
+void update_yylval(Term & current_term, bool empty) {
 	// YYRTWORD 不会调用该函数
 	if (empty) {
 		// 空格字符等
@@ -1956,16 +1968,13 @@ void update_yylval(Term & current_term, bool empty){
 	else {
 		yylval.fs = FlexState(flex_state);
 		yylval.fs.CurrentTerm = current_term;
+		//yylval.fs.CurrentTerm = Term{current_term.token, global_code.substr(flex_state.parse_pos, yyleng) };
+		//std::cout << global_code.substr(flex_state.parse_pos, yyleng) << std::endl;
 	}
 }
-int make_term_flex(const TokenMeta & token, const char * w) {
-	flex_state.CurrentTerm = Term{ token, std::string(w) };
-	return token;
-}
-#ifdef USE_YACC
 int word_parse() {
 	using namespace std;
-	FlexState & fs = yylval.fs;
+	FlexState & fs = flex_state;
 	string yytextstr = string(yytext);
 	transform(yytextstr.begin(), yytextstr.end(), yytextstr.begin(), tolower);
 	yytextstr.erase(remove_if(yytextstr.begin(), yytextstr.end(), isspace), yytextstr.end());
@@ -1999,9 +2008,6 @@ int word_parse() {
 	return YY_WORD;
 }
 char * iter_buff = nullptr;
-/*
-	遇到空格或者回车等无效字符时, code_pos会自增, 但是flex_state不会改变
-*/
 YY_BUFFER_STATE yy_buffer = nullptr;
 void set_buff(const std::string & code) {
 	using namespace std;
@@ -2010,7 +2016,6 @@ void set_buff(const std::string & code) {
 	flex_state.parse_pos = 0;
 	flex_state.parse_len = 0;
 	flex_state.line_pos = 0; 
-	code_pos = 0;
 	if (iter_buff != 0) {
 		free(iter_buff); iter_buff = nullptr;
 	}

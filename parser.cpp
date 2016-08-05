@@ -8,10 +8,39 @@
 
 ParseNode::~ParseNode()
 {
-	//for (int i = 0; i < child.size(); i++)
-	//{
-	//	delete child[i];
-	//}
+	for (int i = 0; i < child.size(); i++)
+	{
+		delete child[i];
+	}
+}
+ParseNode::ParseNode(const ParseNode & pn)
+{
+	this->fs = pn.fs;
+	this->father = pn.father;
+	for (int i = 0; i < pn.child.size(); i++)
+	{
+		this->child.push_back( new ParseNode(*pn.child[i]) );
+	}
+}
+
+ParseNode & ParseNode::operator= (const ParseNode & pn) {
+	if (this == &pn) {
+		return *this;
+	}
+	else {
+		for (int i = 0; i < child.size(); i++)
+		{
+			delete child[i];
+		}
+		child.clear();
+		this->fs = pn.fs;
+		this->father = pn.father;
+		for (int i = 0; i < pn.child.size(); i++)
+		{
+			this->child.push_back(new ParseNode(*pn.child[i]));
+		}
+		return *this;
+	}
 }
 
 ParseNode program_tree;

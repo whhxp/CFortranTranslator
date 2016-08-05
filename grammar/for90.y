@@ -19,9 +19,9 @@ extern void release_buff();
 %token YY_REQ_MORE
 %token YY_GT YY_GE YY_EQ YY_LE YY_LT YY_NEQ YY_NEQV YY_EQV YY_ANDAND YY_OROR YY_NOT YY_POWER YY_DOUBLECOLON YY_NEG
 %token YY_INTEGER YY_FLOAT YY_WORD YY_OPERATOR YY_STRING YY_ILLEGAL YY_COMPLEX YY_TRUE YY_FALSE
-%token YY_END YY_IF YY_THEN YY_ELSE YY_ELSEIF YY_ENDIF YY_DO YY_ENDDO YY_CONTINUE YY_WHILE YY_ENDWHILE YY_WHERE YY_ENDWHERE YY_CASE YY_ENDCASE
+%token YY_END YY_IF YY_THEN YY_ELSE YY_ELSEIF YY_ENDIF YY_DO YY_ENDDO YY_CONTINUE YY_BREAK YY_WHILE YY_ENDWHILE YY_WHERE YY_ENDWHERE YY_CASE YY_ENDCASE
 %token YY_PROGRAM YY_ENDPROGRAM YY_FUNCTION YY_ENDFUNCTION YY_RECURSIVE YY_RESULT YY_SUBROUTINE YY_ENDSUBROUTINE YY_MODULE YY_ENDMODULE YY_BLOCK YY_ENDBLOCK
-%token YY_IMPLICIT YY_NONE YY_USE YY_PARAMETER YY_FORMAT YY_ENTRY
+%token YY_IMPLICIT YY_NONE YY_USE YY_PARAMETER YY_FORMAT YY_ENTRY YY_DIMENSION
 %token YY_INTEGER_T YY_FLOAT_T YY_STRING_T YY_COMPLEX_T YY_BOOL_T
 %token YY_WRITE YY_READ YY_PRINT YY_OPEN YY_CLOSE
 
@@ -43,6 +43,7 @@ extern void release_buff();
 	
 	literal : YY_FLOAT
 			{
+				/* 该条目下的右部全部为单个终结符号(语法树的叶子节点), 因此$1全部来自lex程序 */
 				ParseNode * newnode = new ParseNode();
 				newnode->fs.CurrentTerm = Term{ TokenMeta::Float, "float: " + $1.fs.CurrentTerm.what }; // float number
 				$$ = *newnode;
@@ -68,11 +69,13 @@ extern void release_buff();
 		| YY_FALSE
 			{
 				ParseNode * newnode = new ParseNode();
-				newnode->fs.CurrentTerm = Term{ TokenMeta::Bool, "bool: " + $1.fs.CurrentTerm.what };
+				newnode->fs.CurrentTerm = Term{ TokenMeta::Bool, "bool: " + $1.fs.CurrentTerm.what }; // bool false
 				$$ = *newnode;
 			}
         | YY_COMPLEX
             {printf("complex " );}
+
+		| error '\n'
 
 	exp : '(' exp ')'
 			{ printf("bracket "); }
@@ -148,18 +151,39 @@ extern void release_buff();
         | YY_COMPLEX_T
         | YY_BOOL_T
 
+	slice : exp ':' exp
+			{
+				/* arr[from: to] */
+			}
+		| exp ':' exp ':' exp
+			{
+			}
+
     var_def : type_spec YY_DOUBLECOLON paramtable
+			{
+				/*  */
+			}
+		| type_spec ',' YY_DIMENSION '(' slice ')' YY_DOUBLECOLON paramtable
+			{
+				/* array decl */
+			}
 
     paramtable : YY_WORD
+			{
+				/* paramtable is used in function decl */
+			}
         | YY_WORD '=' exp
         | YY_WORD ',' argtable        
         | YY_WORD '=' exp
         | YY_WORD '=' exp ',' argtable
 
     argtable : exp
+			{
+				/* argtable is used in function call */
+			}
         | exp ',' argtable
 
-    compound_stmt : if_stmt
+    compound_stmt : if_stmt | do_stmt
 
 	if_stmt : YY_IF exp YY_THEN stmt YY_END YY_IF
 			{
@@ -215,17 +239,20 @@ extern void release_buff();
 				newnode->child.push_back(new ParseNode($5)); // another elseif-stmt
 				$$ = *newnode;
 			}
+	do_stmt : YY_DO suite YY_END YY_DO
+		| YY_DO YY_WORD '=' exp ',' exp suite YY_END YY_DO
+		| YY_DO YY_WORD '=' exp ',' exp ',' exp suite YY_END YY_DO
 
-    stmts : stmt
-        | stmt stmts
+    suite : stmt
+        | stmt suite
 
-    program : YY_PROGRAM YY_WORD stmts YY_END YY_PROGRAM YY_WORD
+    program : YY_PROGRAM YY_WORD suite YY_END YY_PROGRAM YY_WORD
 			{ 
 				ParseNode * newnode = new ParseNode();
 				newnode->child.push_back(new ParseNode($3));
 				program_tree = *newnode;
 			}
-        | YY_PROGRAM stmts YY_END YY_PROGRAM
+        | YY_PROGRAM suite YY_END YY_PROGRAM
 			{
 				ParseNode * newnode = new ParseNode();
 				newnode->child.push_back(new ParseNode($2));
@@ -240,10 +267,10 @@ void yyerror(const char* s)
 	fprintf(stderr, "%s\n", s);
 }
 int parse(std::string code) {
-	//YYSTYPE aa;
-	//aa.isnull = true;
+#ifdef USE_YACC
 	set_buff(code);
 	yyparse();
 	release_buff();
+#endif
 	return 0;
 }

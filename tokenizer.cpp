@@ -75,7 +75,11 @@ const vector<KeywordMeta> keywords = {
 		, TokenMeta::Do
 		, YY_DO
 	}
-	, KeywordMeta{"continue"
+	, KeywordMeta{"exit"
+		, TokenMeta::Break
+		, YY_BREAK
+	}
+	, KeywordMeta{"cycle"
 		, TokenMeta::Continue
 		, YY_CONTINUE
 	}

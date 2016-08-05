@@ -19,25 +19,25 @@ int word_parse();
 #endif
 void update_flex(int len, bool newline = false); // do not update CurrentTerm
 void update_yylval(Term & current_term, bool empty = false);
+extern std::string global_code;
 int make_term_flex(const TokenMeta & token, const char * w);
-int code_pos = 0;
 
 #ifdef USE_YACC
 // yacc
 // USE WHTN USE YACC EITHER
-#define YYRTN(TOK, YYTOK) update_flex(yyleng); update_yylval(Term{TOK, std::string(yytext)});	 return YYTOK; 
+#define YYRTN(TOK, YYTOK)  update_yylval(Term{TOK, std::string(yytext)});	update_flex(yyleng);  return YYTOK; 
 // 对于非char运算符要预先解析
-#define YYRTOP(TOK, YYTOK) update_flex(yyleng); update_yylval(Term{TOK, std::string(yytext)});    return YYTOK; 
+#define YYRTOP(TOK, YYTOK) update_yylval(Term{TOK, std::string(yytext)});  update_flex(yyleng);  return YYTOK; 
 // include literal const such as pi, true, false, etc.
-#define YYRTWORD() { update_flex(yyleng); /*do not update yylval because some tokens need to be looked ahead, such as `else if` */ int p = word_parse(); if (p != YY_REQ_MORE) { return p; } }
+#define YYRTWORD() {  /*do not update yylval because some tokens need to be looked ahead, such as `else if` */ int p = word_parse(); if (p != YY_REQ_MORE) { update_flex(yyleng); return p; } else{  /* ?? */ update_flex(yyleng); } }
 
-#define YYRTINT(TOK) update_flex(yyleng); update_yylval( Term{TOK, std::string(yytext)});   	return YY_INTEGER;
-#define YYRTFLOAT(TOK) update_flex(yyleng); update_yylval( Term{TOK, std::string(yytext)});   	return YY_FLOAT; 
-#define YYRTSTRING(TOK) update_flex(yyleng); update_yylval( Term{TOK, std::string(yytext)});  	return YY_STRING; 
+#define YYRTINT(TOK) YYRTN(TOK, YY_INTEGER) 
+#define YYRTFLOAT(TOK) YYRTN(TOK, YY_FLOAT) 
+#define YYRTSTRING(TOK) YYRTN(TOK, YY_STRING) 
 // 规则中被定义的终结符, **包括ascii表内的单个字符**
-#define YYRTILLEGAL(TOK) update_flex(1); update_yylval( Term{TOK, std::string(yytext)});  	return yytext[0]; 
-#define YYRTCRLF() update_flex(yyleng); update_yylval( Term{TokenMeta::CRLF, std::string(yytext)});
-#define YYRTNOP() update_flex(yyleng); update_yylval( Term{TokenMeta::Nop, std::string(yytext)},  true);
+#define YYRTILLEGAL(TOK) update_yylval( Term{TOK, std::string(yytext)});  	 update_flex(1);	return yytext[0]; 
+#define YYRTCRLF()  update_yylval( Term{TokenMeta::CRLF, std::string(yytext)}); update_flex(yyleng);
+#define YYRTNOP() update_yylval( Term{TokenMeta::Nop, std::string(yytext)},  true);  update_flex(yyleng);
 
 #define RTN(TOK, YYTOK) YYRTN(TOK, YYTOK) 
 #define RTOP(TOK, YYTOK) YYRTOP(TOK, YYTOK)
@@ -103,6 +103,7 @@ newline [\r\n]
 "<=" {RTOP(TokenMeta::LE, YY_LE)}
 "==" {RTOP(TokenMeta::EQ, YY_EQ) }
 "/=" {RTOP(TokenMeta::NEQ, YY_NEQ)}
+"~" {yymore(); ECHO; putchar('\n'); }
 [Ee][Ll][Ss][Ee]{ws}[Ii][Ff] {RTWORD()}
 [a-zA-Z_][a-zA-Z0-9]* { RTWORD() }
 \.[a-zA-Z_][a-zA-Z0-9]*\. { RTWORD() }
@@ -117,15 +118,21 @@ int yywrap()
    return(1); 
 }
 
+int make_term_flex(const TokenMeta & token, const char * w) {
+	flex_state.CurrentTerm = Term{ token, std::string(w) };
+	return token;
+}
 void update_flex(int len, bool newline) {
 	if (newline) {
-		flex_state.parse_line++; flex_state.line_pos = 0; flex_state.parse_pos += len; flex_state.parse_len = 0;
+		flex_state.parse_line++; flex_state.line_pos = 0; flex_state.parse_pos += yyleng; flex_state.parse_len = 0;
 	}
 	else {
-		flex_state.parse_pos += len; flex_state.line_pos += flex_state.parse_len; flex_state.parse_len = yyleng;
+		flex_state.parse_pos += len; flex_state.line_pos += flex_state.parse_len; flex_state.parse_len = len;
 	}
 }
-void update_yylval(Term & current_term, bool empty){
+#ifdef USE_YACC
+
+void update_yylval(Term & current_term, bool empty) {
 	// YYRTWORD 不会调用该函数
 	if (empty) {
 		// 空格字符等
@@ -133,16 +140,13 @@ void update_yylval(Term & current_term, bool empty){
 	else {
 		yylval.fs = FlexState(flex_state);
 		yylval.fs.CurrentTerm = current_term;
+		//yylval.fs.CurrentTerm = Term{current_term.token, global_code.substr(flex_state.parse_pos, yyleng) };
+		//std::cout << global_code.substr(flex_state.parse_pos, yyleng) << std::endl;
 	}
 }
-int make_term_flex(const TokenMeta & token, const char * w) {
-	flex_state.CurrentTerm = Term{ token, std::string(w) };
-	return token;
-}
-#ifdef USE_YACC
 int word_parse() {
 	using namespace std;
-	FlexState & fs = yylval.fs;
+	FlexState & fs = flex_state;
 	string yytextstr = string(yytext);
 	transform(yytextstr.begin(), yytextstr.end(), yytextstr.begin(), tolower);
 	yytextstr.erase(remove_if(yytextstr.begin(), yytextstr.end(), isspace), yytextstr.end());
@@ -176,9 +180,6 @@ int word_parse() {
 	return YY_WORD;
 }
 char * iter_buff = nullptr;
-/*
-	遇到空格或者回车等无效字符时, code_pos会自增, 但是flex_state不会改变
-*/
 YY_BUFFER_STATE yy_buffer = nullptr;
 void set_buff(const std::string & code) {
 	using namespace std;
@@ -187,7 +188,6 @@ void set_buff(const std::string & code) {
 	flex_state.parse_pos = 0;
 	flex_state.parse_len = 0;
 	flex_state.line_pos = 0; 
-	code_pos = 0;
 	if (iter_buff != 0) {
 		free(iter_buff); iter_buff = nullptr;
 	}

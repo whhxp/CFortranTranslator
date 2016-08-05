@@ -13,7 +13,8 @@ struct ParseNode {
 	std::vector<ParseNode *> child;
 	FlexState fs;
 
-	ParseNode(const ParseNode &) = default;
+	ParseNode(const ParseNode &);
+	ParseNode & operator= (const ParseNode &) ;
 	ParseNode() = default;
 	~ParseNode();
 };
