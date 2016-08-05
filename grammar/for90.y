@@ -19,7 +19,7 @@ extern void release_buff();
 %token YY_REQ_MORE
 %token YY_GT YY_GE YY_EQ YY_LE YY_LT YY_NEQ YY_NEQV YY_EQV YY_ANDAND YY_OROR YY_NOT YY_POWER YY_DOUBLECOLON YY_NEG
 %token YY_INTEGER YY_FLOAT YY_WORD YY_OPERATOR YY_STRING YY_ILLEGAL YY_COMPLEX YY_TRUE YY_FALSE
-%token YY_IF YY_THEN YY_ELSE YY_ELSEIF YY_ENDIF YY_DO YY_ENDDO YY_CONTINUE YY_WHILE YY_ENDWHILE YY_WHERE YY_ENDWHERE YY_CASE YY_ENDCASE
+%token YY_END YY_IF YY_THEN YY_ELSE YY_ELSEIF YY_ENDIF YY_DO YY_ENDDO YY_CONTINUE YY_WHILE YY_ENDWHILE YY_WHERE YY_ENDWHERE YY_CASE YY_ENDCASE
 %token YY_PROGRAM YY_ENDPROGRAM YY_FUNCTION YY_ENDFUNCTION YY_RECURSIVE YY_RESULT YY_SUBROUTINE YY_ENDSUBROUTINE YY_MODULE YY_ENDMODULE YY_BLOCK YY_ENDBLOCK
 %token YY_IMPLICIT YY_NONE YY_USE YY_PARAMETER YY_FORMAT YY_ENTRY
 %token YY_INTEGER_T YY_FLOAT_T YY_STRING_T YY_COMPLEX_T YY_BOOL_T
@@ -161,7 +161,7 @@ extern void release_buff();
 
     compound_stmt : if_stmt
 
-	if_stmt : YY_IF exp YY_THEN stmt YY_ENDIF
+	if_stmt : YY_IF exp YY_THEN stmt YY_END YY_IF
 			{
 				ParseNode * newnode = new ParseNode();
 				newnode->fs.CurrentTerm = Term{ TokenMeta::If, "if" };
@@ -169,7 +169,7 @@ extern void release_buff();
 				newnode->child.push_back(new ParseNode($4)); // stmt
 				$$ = *newnode;
 			}
-		| YY_IF exp YY_THEN stmt YY_ELSE stmt YY_ENDIF
+		| YY_IF exp YY_THEN stmt YY_ELSE stmt YY_END YY_IF
 			{
 				ParseNode * newnode = new ParseNode();
 				newnode->fs.CurrentTerm = Term{ TokenMeta::If, "if-else" };
@@ -178,7 +178,7 @@ extern void release_buff();
 				newnode->child.push_back(new ParseNode($6)); // else-stmt
 				$$ = *newnode;
 			}
-		| YY_IF exp YY_THEN stmt elseif_stmt YY_ENDIF
+		| YY_IF exp YY_THEN stmt elseif_stmt YY_END YY_IF
 			{
 				ParseNode * newnode = new ParseNode();
 				newnode->fs.CurrentTerm = Term{ TokenMeta::If, "if-elseif" };
@@ -187,7 +187,7 @@ extern void release_buff();
 				newnode->child.push_back(new ParseNode($5)); // recursive elseif-stmt
 				$$ = *newnode;
 			}
-		| YY_IF exp YY_THEN stmt elseif_stmt YY_ELSE stmt YY_ENDIF
+		| YY_IF exp YY_THEN stmt elseif_stmt YY_ELSE stmt YY_END YY_IF
 			{
 				ParseNode * newnode = new ParseNode();
 				newnode->fs.CurrentTerm = Term{ TokenMeta::If, "if-elseif-else" };
@@ -219,13 +219,13 @@ extern void release_buff();
     stmts : stmt
         | stmt stmts
 
-    program : YY_PROGRAM YY_WORD stmts YY_ENDPROGRAM YY_WORD
+    program : YY_PROGRAM YY_WORD stmts YY_END YY_PROGRAM YY_WORD
 			{ 
 				ParseNode * newnode = new ParseNode();
 				newnode->child.push_back(new ParseNode($3));
 				program_tree = *newnode;
 			}
-        | YY_PROGRAM stmts YY_ENDPROGRAM  
+        | YY_PROGRAM stmts YY_END YY_PROGRAM
 			{
 				ParseNode * newnode = new ParseNode();
 				newnode->child.push_back(new ParseNode($2));

@@ -27,10 +27,10 @@ const vector<KeywordMeta> keywords = {
 		, TokenMeta::ElseIf
 		, YY_ELSEIF
 	}
-	//, KeywordMeta{"end"
-	//	, TokenMeta::META_ANY
-	//	, YY_END
-	//}
+	, KeywordMeta{"end"
+		, TokenMeta::RBrace
+		, YY_END
+	}
 	, KeywordMeta{"endif"
 		, TokenMeta::RBrace
 		, YY_ENDIF

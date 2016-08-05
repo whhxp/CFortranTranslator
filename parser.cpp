@@ -8,10 +8,10 @@
 
 ParseNode::~ParseNode()
 {
-	for (int i = 0; i < child.size(); i++)
-	{
-		delete child[i];
-	}
+	//for (int i = 0; i < child.size(); i++)
+	//{
+	//	delete child[i];
+	//}
 }
 
 ParseNode program_tree;

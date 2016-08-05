@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <boost/shared_ptr.hpp>
 #include "tokenizer.h"
 
 int parse(std::string code);
@@ -8,6 +9,7 @@ int parse(std::string code);
 // ”Ô“Â
 struct ParseNode {
 	struct ParseNode * father;
+	
 	std::vector<ParseNode *> child;
 	FlexState fs;
 
