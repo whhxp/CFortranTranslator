@@ -6,6 +6,7 @@
 using namespace std;
 
 string global_code;
+char errlog[128];
 int main()
 {
 	//istringstream istr;
@@ -56,7 +57,6 @@ int main()
 	//next_token(global_code, 0);
 
 	parse(global_code);
-	char errlog[128];
 	while (fscanf(stderr, "%s", errlog) != EOF) {
 		printf("%s\n", errlog);
 	}

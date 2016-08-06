@@ -1,13 +1,13 @@
 # CFortranTranslator
-A translator between C and Fortran.
+A translator between C++ and Fortran90.
 
 ## Install
-win_flex and win_bison
-boost
-vs2015
+1. win_flex and win_bison
+2. boost
+3. vs2015
 
 ## fortran grammar restrictions and translate rules
-for all accepted grammar please refer to for90.y
+refer to for90.y for all accepted grammar
 ### keywords
 
 1. no word after `END [DO|IF|CASE|...]` term

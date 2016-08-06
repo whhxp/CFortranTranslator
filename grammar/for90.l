@@ -29,7 +29,8 @@ int make_term_flex(const TokenMeta & token, const char * w);
 // 对于非char运算符要预先解析
 #define YYRTOP(TOK, YYTOK) update_yylval(Term{TOK, std::string(yytext)});  update_flex(yyleng);  return YYTOK; 
 // include literal const such as pi, true, false, etc.
-#define YYRTWORD() {  /*do not update yylval because some tokens need to be looked ahead, such as `else if` */ int p = word_parse(); if (p != YY_REQ_MORE) { update_flex(yyleng); return p; } else{  /* ?? */ update_flex(yyleng); } }
+#define YYRTWORD() {  /*do not update yylval because some tokens need to be looked ahead, such as `else if` */ int p = word_parse(); if (p != YY_REQ_MORE) \
+	{ update_flex(yyleng);  return p;  } else{  /* ?? */ update_flex(yyleng); } }
 
 #define YYRTINT(TOK) YYRTN(TOK, YY_INTEGER) 
 #define YYRTFLOAT(TOK) YYRTN(TOK, YY_FLOAT) 
@@ -150,33 +151,16 @@ int word_parse() {
 	string yytextstr = string(yytext);
 	transform(yytextstr.begin(), yytextstr.end(), yytextstr.begin(), tolower);
 	yytextstr.erase(remove_if(yytextstr.begin(), yytextstr.end(), isspace), yytextstr.end());
+	//yymore();
+	//cout << "yytext : " << yytext << endl;
 	for (int i = 0; i < keywords.size(); i++)
 	{
 		if (keywords[i].what == yytextstr) {
-		//	// 
-		//	map<string, vector<string>>::iterator mapf = forward1.find(flex_state.CurrentTerm.what);
-		//	map<string, vector<string>>::iterator mapself = forward1.find(yytextstr);
-		//	if (mapf != forward1.end()) {
-		//		// 如果yytextstr前面是forward1里面的key, 例如if, 此时flex_state(等于else) 比 fs(等于if) 要提前一个token
-		//		if (find(mapf->second.begin(), mapf->second.end(), yytextstr) != mapf->second.end()) {
-		//			// 构成归约
-		//		}
-		//		else {
-		//			// 不构成归约
-		//		}
-		//	}
-		//	else if (mapself != forward1.end()) {
-		//		// do not update yylval because need to look ahead
-		//		// e.g else | if
-		//		update_yylval(yyleng, Term{ keywords[i].token , std::string(yytextstr) });
-		//		return YY_REQ_MORE;
-		//	}
-		//	else {
 				update_yylval( Term{ keywords[i].token , std::string(yytextstr) });
 				return keywords[i].yytoken;
-			//}
 		}
 	}
+	update_yylval(Term{ TokenMeta::META_WORD , std::string(yytextstr) });
 	return YY_WORD;
 }
 char * iter_buff = nullptr;

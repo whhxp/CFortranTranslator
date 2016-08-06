@@ -45,31 +45,32 @@ extern void release_buff();
 			{
 				/* 该条目下的右部全部为单个终结符号(语法树的叶子节点), 因此$1全部来自lex程序 */
 				ParseNode * newnode = new ParseNode();
-				newnode->fs.CurrentTerm = Term{ TokenMeta::Float, "float: " + $1.fs.CurrentTerm.what }; // float number
+				newnode->fs.CurrentTerm = Term{ TokenMeta::Float, $1.fs.CurrentTerm.what }; // float number
+				newnode->attr = new VariableAttr(newnode); newnode->attr->parse();
 				$$ = *newnode;
 			}
 		| YY_INTEGER
 			{
 				ParseNode * newnode = new ParseNode();
-				newnode->fs.CurrentTerm = Term{ TokenMeta::Int, "int: " + $1.fs.CurrentTerm.what }; // int number
+				newnode->fs.CurrentTerm = Term{ TokenMeta::Int, $1.fs.CurrentTerm.what }; // int number
 				$$ = *newnode;
 			}
 		| YY_STRING
 			{
 				ParseNode * newnode = new ParseNode();
-				newnode->fs.CurrentTerm = Term{ TokenMeta::String, "string: " + $1.fs.CurrentTerm.what }; // string
+				newnode->fs.CurrentTerm = Term{ TokenMeta::String, $1.fs.CurrentTerm.what }; // string
 				$$ = *newnode;
 			}
 		| YY_TRUE
 			{
 				ParseNode * newnode = new ParseNode();
-				newnode->fs.CurrentTerm = Term{ TokenMeta::Bool, "bool: " + $1.fs.CurrentTerm.what }; // bool true
+				newnode->fs.CurrentTerm = Term{ TokenMeta::Bool, $1.fs.CurrentTerm.what }; // bool true
 				$$ = *newnode;
 			}
 		| YY_FALSE
 			{
 				ParseNode * newnode = new ParseNode();
-				newnode->fs.CurrentTerm = Term{ TokenMeta::Bool, "bool: " + $1.fs.CurrentTerm.what }; // bool false
+				newnode->fs.CurrentTerm = Term{ TokenMeta::Bool, $1.fs.CurrentTerm.what }; // bool false
 				$$ = *newnode;
 			}
         | YY_COMPLEX
@@ -83,47 +84,47 @@ extern void release_buff();
 			{
 				ParseNode * newnode = new ParseNode();
 				newnode->fs.CurrentTerm = Term{ TokenMeta::Add, "+" };
-				newnode->child.push_back(new ParseNode($1)); // left operand exp
-				newnode->child.push_back(new ParseNode($3)); // tight operand exp
+				newnode->addchild(new ParseNode($1)); // left operand exp
+				newnode->addchild(new ParseNode($3)); // tight operand exp
 				$$ = *newnode;
 			}
 		| exp '-' exp
 			{
 				ParseNode * newnode = new ParseNode();
 				newnode->fs.CurrentTerm = Term{ TokenMeta::Minus, "-" };
-				newnode->child.push_back(new ParseNode($1)); // left operand exp
-				newnode->child.push_back(new ParseNode($3)); // right operand exp
+				newnode->addchild(new ParseNode($1)); // left operand exp
+				newnode->addchild(new ParseNode($3)); // right operand exp
 				$$ = *newnode;
 			}
 		| exp '*' exp
 			{
 				ParseNode * newnode = new ParseNode();
 				newnode->fs.CurrentTerm = Term{ TokenMeta::Multiply, "*" };
-				newnode->child.push_back(new ParseNode($1)); // left operand exp
-				newnode->child.push_back(new ParseNode($3)); // right operand exp
+				newnode->addchild(new ParseNode($1)); // left operand exp
+				newnode->addchild(new ParseNode($3)); // right operand exp
 				$$ = *newnode;
 			}
 		| exp '/' exp
 			{
 				ParseNode * newnode = new ParseNode();
 				newnode->fs.CurrentTerm = Term{ TokenMeta::Divide, "/" };
-				newnode->child.push_back(new ParseNode($1)); // left operand exp
-				newnode->child.push_back(new ParseNode($3)); // right operand exp
+				newnode->addchild(new ParseNode($1)); // left operand exp
+				newnode->addchild(new ParseNode($3)); // right operand exp
 				$$ = *newnode;
 			}
 		| exp YY_POWER exp
 			{
 				ParseNode * newnode = new ParseNode();
 				newnode->fs.CurrentTerm = Term{ TokenMeta::Power, "**" };
-				newnode->child.push_back(new ParseNode($1)); // left operand exp
-				newnode->child.push_back(new ParseNode($3)); // right operand exp
+				newnode->addchild(new ParseNode($1)); // left operand exp
+				newnode->addchild(new ParseNode($3)); // right operand exp
 				$$ = *newnode;
 			}
         | '-' exp %prec YY_NEG
 			{
 				ParseNode * newnode = new ParseNode();
 				newnode->fs.CurrentTerm = Term{ TokenMeta::Neg, "-" };
-				newnode->child.push_back(new ParseNode($2)); // only right operand exp
+				newnode->addchild(new ParseNode($2)); // only right operand exp
 				$$ = *newnode;
 			}
 		| literal
@@ -189,44 +190,44 @@ extern void release_buff();
 			{
 				ParseNode * newnode = new ParseNode();
 				newnode->fs.CurrentTerm = Term{ TokenMeta::If, "if" };
-				newnode->child.push_back(new ParseNode($2)); // exp
-				newnode->child.push_back(new ParseNode($4)); // stmt
+				newnode->addchild(new ParseNode($2)); // exp
+				newnode->addchild(new ParseNode($4)); // stmt
 				$$ = *newnode;
 			}
 		| YY_IF exp YY_THEN stmt YY_ELSE stmt YY_END YY_IF
 			{
 				ParseNode * newnode = new ParseNode();
 				newnode->fs.CurrentTerm = Term{ TokenMeta::If, "if-else" };
-				newnode->child.push_back(new ParseNode($2)); // exp
-				newnode->child.push_back(new ParseNode($4)); // stmt
-				newnode->child.push_back(new ParseNode($6)); // else-stmt
+				newnode->addchild(new ParseNode($2)); // exp
+				newnode->addchild(new ParseNode($4)); // stmt
+				newnode->addchild(new ParseNode($6)); // else-stmt
 				$$ = *newnode;
 			}
 		| YY_IF exp YY_THEN stmt elseif_stmt YY_END YY_IF
 			{
 				ParseNode * newnode = new ParseNode();
 				newnode->fs.CurrentTerm = Term{ TokenMeta::If, "if-elseif" };
-				newnode->child.push_back(new ParseNode($2)); // exp
-				newnode->child.push_back(new ParseNode($4)); // stmt
-				newnode->child.push_back(new ParseNode($5)); // recursive elseif-stmt
+				newnode->addchild(new ParseNode($2)); // exp
+				newnode->addchild(new ParseNode($4)); // stmt
+				newnode->addchild(new ParseNode($5)); // recursive elseif-stmt
 				$$ = *newnode;
 			}
 		| YY_IF exp YY_THEN stmt elseif_stmt YY_ELSE stmt YY_END YY_IF
 			{
 				ParseNode * newnode = new ParseNode();
 				newnode->fs.CurrentTerm = Term{ TokenMeta::If, "if-elseif-else" };
-				newnode->child.push_back(new ParseNode($2)); // exp
-				newnode->child.push_back(new ParseNode($4)); // stmt
-				newnode->child.push_back(new ParseNode($5)); // recursive elseif-stmt
-				newnode->child.push_back(new ParseNode($7)); // else-stmt
+				newnode->addchild(new ParseNode($2)); // exp
+				newnode->addchild(new ParseNode($4)); // stmt
+				newnode->addchild(new ParseNode($5)); // recursive elseif-stmt
+				newnode->addchild(new ParseNode($7)); // else-stmt
 				$$ = *newnode;
 			}
 	elseif_stmt : YY_ELSEIF exp YY_THEN stmt
 			{
 				ParseNode * newnode = new ParseNode();
 				newnode->fs.CurrentTerm = Term{ TokenMeta::ElseIf, "elseif" };
-				newnode->child.push_back(new ParseNode($2)); // exp
-				newnode->child.push_back(new ParseNode($4)); // stmt
+				newnode->addchild(new ParseNode($2)); // exp
+				newnode->addchild(new ParseNode($4)); // stmt
 				$$ = *newnode;
 			}
 
@@ -234,9 +235,9 @@ extern void release_buff();
 			{
 				ParseNode * newnode = new ParseNode();
 				newnode->fs.CurrentTerm = Term{ TokenMeta::ElseIf, "elseif-else-if" };
-				newnode->child.push_back(new ParseNode($2)); // exp
-				newnode->child.push_back(new ParseNode($4)); // stmt
-				newnode->child.push_back(new ParseNode($5)); // another elseif-stmt
+				newnode->addchild(new ParseNode($2)); // exp
+				newnode->addchild(new ParseNode($4)); // stmt
+				newnode->addchild(new ParseNode($5)); // another elseif-stmt
 				$$ = *newnode;
 			}
 	do_stmt : YY_DO suite YY_END YY_DO
@@ -249,13 +250,13 @@ extern void release_buff();
     program : YY_PROGRAM YY_WORD suite YY_END YY_PROGRAM YY_WORD
 			{ 
 				ParseNode * newnode = new ParseNode();
-				newnode->child.push_back(new ParseNode($3));
+				newnode->addchild(new ParseNode($3));
 				program_tree = *newnode;
 			}
         | YY_PROGRAM suite YY_END YY_PROGRAM
 			{
 				ParseNode * newnode = new ParseNode();
-				newnode->child.push_back(new ParseNode($2));
+				newnode->addchild(new ParseNode($2));
 				program_tree = *newnode;
 			}
 

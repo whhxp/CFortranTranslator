@@ -530,13 +530,13 @@ static const yytype_int8 yyrhs[] =
 };
 
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
-static const yytype_uint8 yyrline[] =
+static const yytype_uint16 yyrline[] =
 {
-       0,    42,    44,    51,    57,    63,    69,    75,    78,    80,
-      82,    90,    98,   106,   114,   122,   129,   134,   137,   138,
-     139,   141,   143,   144,   145,   146,   180,   184,   186,   186,
-     188,   196,   205,   214,   224,   233,   242,   243,   244,   246,
-     247,   249,   255
+       0,    42,    44,    52,    58,    64,    70,    76,    79,    81,
+      83,    91,    99,   107,   115,   123,   130,   135,   138,   139,
+     140,   142,   144,   145,   146,   147,   181,   185,   187,   187,
+     189,   197,   206,   215,   225,   234,   243,   244,   245,   247,
+     248,   250,   256
 };
 #endif
 
@@ -1554,137 +1554,138 @@ yyreduce:
     {
 				/* 该条目下的右部全部为单个终结符号(语法树的叶子节点), 因此$1全部来自lex程序 */
 				ParseNode * newnode = new ParseNode();
-				newnode->fs.CurrentTerm = Term{ TokenMeta::Float, "float: " + (yyvsp[(1) - (1)]).fs.CurrentTerm.what }; // float number
+				newnode->fs.CurrentTerm = Term{ TokenMeta::Float, (yyvsp[(1) - (1)]).fs.CurrentTerm.what }; // float number
+				newnode->attr = new VariableAttr(newnode); newnode->attr->parse();
 				(yyval) = *newnode;
 			}
     break;
 
   case 3:
 /* Line 1792 of yacc.c  */
-#line 52 "for90.y"
+#line 53 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
-				newnode->fs.CurrentTerm = Term{ TokenMeta::Int, "int: " + (yyvsp[(1) - (1)]).fs.CurrentTerm.what }; // int number
+				newnode->fs.CurrentTerm = Term{ TokenMeta::Int, (yyvsp[(1) - (1)]).fs.CurrentTerm.what }; // int number
 				(yyval) = *newnode;
 			}
     break;
 
   case 4:
 /* Line 1792 of yacc.c  */
-#line 58 "for90.y"
+#line 59 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
-				newnode->fs.CurrentTerm = Term{ TokenMeta::String, "string: " + (yyvsp[(1) - (1)]).fs.CurrentTerm.what }; // string
+				newnode->fs.CurrentTerm = Term{ TokenMeta::String, (yyvsp[(1) - (1)]).fs.CurrentTerm.what }; // string
 				(yyval) = *newnode;
 			}
     break;
 
   case 5:
 /* Line 1792 of yacc.c  */
-#line 64 "for90.y"
+#line 65 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
-				newnode->fs.CurrentTerm = Term{ TokenMeta::Bool, "bool: " + (yyvsp[(1) - (1)]).fs.CurrentTerm.what }; // bool true
+				newnode->fs.CurrentTerm = Term{ TokenMeta::Bool, (yyvsp[(1) - (1)]).fs.CurrentTerm.what }; // bool true
 				(yyval) = *newnode;
 			}
     break;
 
   case 6:
 /* Line 1792 of yacc.c  */
-#line 70 "for90.y"
+#line 71 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
-				newnode->fs.CurrentTerm = Term{ TokenMeta::Bool, "bool: " + (yyvsp[(1) - (1)]).fs.CurrentTerm.what }; // bool false
+				newnode->fs.CurrentTerm = Term{ TokenMeta::Bool, (yyvsp[(1) - (1)]).fs.CurrentTerm.what }; // bool false
 				(yyval) = *newnode;
 			}
     break;
 
   case 7:
 /* Line 1792 of yacc.c  */
-#line 76 "for90.y"
+#line 77 "for90.y"
     {printf("complex " );}
     break;
 
   case 9:
 /* Line 1792 of yacc.c  */
-#line 81 "for90.y"
+#line 82 "for90.y"
     { printf("bracket "); }
     break;
 
   case 10:
 /* Line 1792 of yacc.c  */
-#line 83 "for90.y"
+#line 84 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
 				newnode->fs.CurrentTerm = Term{ TokenMeta::Add, "+" };
-				newnode->child.push_back(new ParseNode((yyvsp[(1) - (3)]))); // left operand exp
-				newnode->child.push_back(new ParseNode((yyvsp[(3) - (3)]))); // tight operand exp
+				newnode->addchild(new ParseNode((yyvsp[(1) - (3)]))); // left operand exp
+				newnode->addchild(new ParseNode((yyvsp[(3) - (3)]))); // tight operand exp
 				(yyval) = *newnode;
 			}
     break;
 
   case 11:
 /* Line 1792 of yacc.c  */
-#line 91 "for90.y"
+#line 92 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
 				newnode->fs.CurrentTerm = Term{ TokenMeta::Minus, "-" };
-				newnode->child.push_back(new ParseNode((yyvsp[(1) - (3)]))); // left operand exp
-				newnode->child.push_back(new ParseNode((yyvsp[(3) - (3)]))); // right operand exp
+				newnode->addchild(new ParseNode((yyvsp[(1) - (3)]))); // left operand exp
+				newnode->addchild(new ParseNode((yyvsp[(3) - (3)]))); // right operand exp
 				(yyval) = *newnode;
 			}
     break;
 
   case 12:
 /* Line 1792 of yacc.c  */
-#line 99 "for90.y"
+#line 100 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
 				newnode->fs.CurrentTerm = Term{ TokenMeta::Multiply, "*" };
-				newnode->child.push_back(new ParseNode((yyvsp[(1) - (3)]))); // left operand exp
-				newnode->child.push_back(new ParseNode((yyvsp[(3) - (3)]))); // right operand exp
+				newnode->addchild(new ParseNode((yyvsp[(1) - (3)]))); // left operand exp
+				newnode->addchild(new ParseNode((yyvsp[(3) - (3)]))); // right operand exp
 				(yyval) = *newnode;
 			}
     break;
 
   case 13:
 /* Line 1792 of yacc.c  */
-#line 107 "for90.y"
+#line 108 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
 				newnode->fs.CurrentTerm = Term{ TokenMeta::Divide, "/" };
-				newnode->child.push_back(new ParseNode((yyvsp[(1) - (3)]))); // left operand exp
-				newnode->child.push_back(new ParseNode((yyvsp[(3) - (3)]))); // right operand exp
+				newnode->addchild(new ParseNode((yyvsp[(1) - (3)]))); // left operand exp
+				newnode->addchild(new ParseNode((yyvsp[(3) - (3)]))); // right operand exp
 				(yyval) = *newnode;
 			}
     break;
 
   case 14:
 /* Line 1792 of yacc.c  */
-#line 115 "for90.y"
+#line 116 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
 				newnode->fs.CurrentTerm = Term{ TokenMeta::Power, "**" };
-				newnode->child.push_back(new ParseNode((yyvsp[(1) - (3)]))); // left operand exp
-				newnode->child.push_back(new ParseNode((yyvsp[(3) - (3)]))); // right operand exp
+				newnode->addchild(new ParseNode((yyvsp[(1) - (3)]))); // left operand exp
+				newnode->addchild(new ParseNode((yyvsp[(3) - (3)]))); // right operand exp
 				(yyval) = *newnode;
 			}
     break;
 
   case 15:
 /* Line 1792 of yacc.c  */
-#line 123 "for90.y"
+#line 124 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
 				newnode->fs.CurrentTerm = Term{ TokenMeta::Neg, "-" };
-				newnode->child.push_back(new ParseNode((yyvsp[(2) - (2)]))); // only right operand exp
+				newnode->addchild(new ParseNode((yyvsp[(2) - (2)]))); // only right operand exp
 				(yyval) = *newnode;
 			}
     break;
 
   case 16:
 /* Line 1792 of yacc.c  */
-#line 130 "for90.y"
+#line 131 "for90.y"
     { 
 				// 
 				(yyval) = (yyvsp[(1) - (1)]);
@@ -1693,13 +1694,13 @@ yyreduce:
 
   case 17:
 /* Line 1792 of yacc.c  */
-#line 135 "for90.y"
+#line 136 "for90.y"
     { printf("word ");}
     break;
 
   case 26:
 /* Line 1792 of yacc.c  */
-#line 181 "for90.y"
+#line 182 "for90.y"
     {
 				/* argtable is used in function call */
 			}
@@ -1707,104 +1708,104 @@ yyreduce:
 
   case 30:
 /* Line 1792 of yacc.c  */
-#line 189 "for90.y"
+#line 190 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
 				newnode->fs.CurrentTerm = Term{ TokenMeta::If, "if" };
-				newnode->child.push_back(new ParseNode((yyvsp[(2) - (6)]))); // exp
-				newnode->child.push_back(new ParseNode((yyvsp[(4) - (6)]))); // stmt
+				newnode->addchild(new ParseNode((yyvsp[(2) - (6)]))); // exp
+				newnode->addchild(new ParseNode((yyvsp[(4) - (6)]))); // stmt
 				(yyval) = *newnode;
 			}
     break;
 
   case 31:
 /* Line 1792 of yacc.c  */
-#line 197 "for90.y"
+#line 198 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
 				newnode->fs.CurrentTerm = Term{ TokenMeta::If, "if-else" };
-				newnode->child.push_back(new ParseNode((yyvsp[(2) - (8)]))); // exp
-				newnode->child.push_back(new ParseNode((yyvsp[(4) - (8)]))); // stmt
-				newnode->child.push_back(new ParseNode((yyvsp[(6) - (8)]))); // else-stmt
+				newnode->addchild(new ParseNode((yyvsp[(2) - (8)]))); // exp
+				newnode->addchild(new ParseNode((yyvsp[(4) - (8)]))); // stmt
+				newnode->addchild(new ParseNode((yyvsp[(6) - (8)]))); // else-stmt
 				(yyval) = *newnode;
 			}
     break;
 
   case 32:
 /* Line 1792 of yacc.c  */
-#line 206 "for90.y"
+#line 207 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
 				newnode->fs.CurrentTerm = Term{ TokenMeta::If, "if-elseif" };
-				newnode->child.push_back(new ParseNode((yyvsp[(2) - (7)]))); // exp
-				newnode->child.push_back(new ParseNode((yyvsp[(4) - (7)]))); // stmt
-				newnode->child.push_back(new ParseNode((yyvsp[(5) - (7)]))); // recursive elseif-stmt
+				newnode->addchild(new ParseNode((yyvsp[(2) - (7)]))); // exp
+				newnode->addchild(new ParseNode((yyvsp[(4) - (7)]))); // stmt
+				newnode->addchild(new ParseNode((yyvsp[(5) - (7)]))); // recursive elseif-stmt
 				(yyval) = *newnode;
 			}
     break;
 
   case 33:
 /* Line 1792 of yacc.c  */
-#line 215 "for90.y"
+#line 216 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
 				newnode->fs.CurrentTerm = Term{ TokenMeta::If, "if-elseif-else" };
-				newnode->child.push_back(new ParseNode((yyvsp[(2) - (9)]))); // exp
-				newnode->child.push_back(new ParseNode((yyvsp[(4) - (9)]))); // stmt
-				newnode->child.push_back(new ParseNode((yyvsp[(5) - (9)]))); // recursive elseif-stmt
-				newnode->child.push_back(new ParseNode((yyvsp[(7) - (9)]))); // else-stmt
+				newnode->addchild(new ParseNode((yyvsp[(2) - (9)]))); // exp
+				newnode->addchild(new ParseNode((yyvsp[(4) - (9)]))); // stmt
+				newnode->addchild(new ParseNode((yyvsp[(5) - (9)]))); // recursive elseif-stmt
+				newnode->addchild(new ParseNode((yyvsp[(7) - (9)]))); // else-stmt
 				(yyval) = *newnode;
 			}
     break;
 
   case 34:
 /* Line 1792 of yacc.c  */
-#line 225 "for90.y"
+#line 226 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
 				newnode->fs.CurrentTerm = Term{ TokenMeta::ElseIf, "elseif" };
-				newnode->child.push_back(new ParseNode((yyvsp[(2) - (4)]))); // exp
-				newnode->child.push_back(new ParseNode((yyvsp[(4) - (4)]))); // stmt
+				newnode->addchild(new ParseNode((yyvsp[(2) - (4)]))); // exp
+				newnode->addchild(new ParseNode((yyvsp[(4) - (4)]))); // stmt
 				(yyval) = *newnode;
 			}
     break;
 
   case 35:
 /* Line 1792 of yacc.c  */
-#line 234 "for90.y"
+#line 235 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
 				newnode->fs.CurrentTerm = Term{ TokenMeta::ElseIf, "elseif-else-if" };
-				newnode->child.push_back(new ParseNode((yyvsp[(2) - (5)]))); // exp
-				newnode->child.push_back(new ParseNode((yyvsp[(4) - (5)]))); // stmt
-				newnode->child.push_back(new ParseNode((yyvsp[(5) - (5)]))); // another elseif-stmt
+				newnode->addchild(new ParseNode((yyvsp[(2) - (5)]))); // exp
+				newnode->addchild(new ParseNode((yyvsp[(4) - (5)]))); // stmt
+				newnode->addchild(new ParseNode((yyvsp[(5) - (5)]))); // another elseif-stmt
 				(yyval) = *newnode;
 			}
     break;
 
   case 41:
 /* Line 1792 of yacc.c  */
-#line 250 "for90.y"
+#line 251 "for90.y"
     { 
 				ParseNode * newnode = new ParseNode();
-				newnode->child.push_back(new ParseNode((yyvsp[(3) - (6)])));
+				newnode->addchild(new ParseNode((yyvsp[(3) - (6)])));
 				program_tree = *newnode;
 			}
     break;
 
   case 42:
 /* Line 1792 of yacc.c  */
-#line 256 "for90.y"
+#line 257 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
-				newnode->child.push_back(new ParseNode((yyvsp[(2) - (4)])));
+				newnode->addchild(new ParseNode((yyvsp[(2) - (4)])));
 				program_tree = *newnode;
 			}
     break;
 
 
 /* Line 1792 of yacc.c  */
-#line 1808 "for90.tab.cpp"
+#line 1809 "for90.tab.cpp"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2036,7 +2037,7 @@ yyreturn:
 
 
 /* Line 2055 of yacc.c  */
-#line 262 "for90.y"
+#line 263 "for90.y"
 
 //extern "C" int yylex();
 
