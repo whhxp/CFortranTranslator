@@ -60,6 +60,9 @@
     <ClInclude Include="..\..\cgen.h">
       <Filter>target</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\for90std.h">
+      <Filter>target</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Flex Include="..\..\grammar\for90.l">

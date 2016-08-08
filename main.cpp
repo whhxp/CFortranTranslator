@@ -50,8 +50,12 @@ int main()
 	global_code = "program if 1 then 2 else if 3 then 4 end if end program";
 	//global_code = "\"ab\\\"c\"";
 	//global_code = "program 1.3 + 2 * 3 - .true. end program";
-	global_code = "program 1.3 + 2 * 3 - .true. end program";
-	global_code = "program if 1 then 2 else if 3 then 4 end if end program";
+	//global_code = "program 1.3 + 2 * 3 - .true. end program";
+	global_code = "program integer::a \n if 1 then 2 else if 3 then 4 end if end program";
+	global_code = "program integer::a = 1 + 2, b = 2, c = 3 \n  end program";
+	global_code = "program integer,dimension(5,7)::A \n  end program";
+	//global_code = "program integer::A, B \n  end program";
+	//global_code = "program integer::a = 1 + 2 \n  end program";
 	//global_code = "program 1 * (2 - 3) end program";
 	//global_code = "program if end else";
 	//global_code = "~~~~~";
@@ -63,7 +67,7 @@ int main()
 		printf("%s\n", errlog);
 	}
 	preorder(&program_tree);
-	cout << endl << gen_code(&program_tree) << endl;
+	//cout << endl << gen_code(&program_tree) << endl;
 	system("pause");
 	return 0;
 }

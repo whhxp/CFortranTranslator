@@ -29,6 +29,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\cgen.h" />
+    <ClInclude Include="..\..\for90std.h" />
     <ClInclude Include="..\..\grammar\for90.flex.h" />
     <ClInclude Include="..\..\grammar\for90.tab.h" />
     <ClInclude Include="..\..\Intent.h" />

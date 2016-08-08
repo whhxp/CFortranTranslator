@@ -13,14 +13,19 @@ struct ParseNode {
 	struct ParseNode * father;
 	
 	std::vector<ParseNode *> child;
-	FlexState fs; // 当前归约项目在代码段中的对应位置和作用(终结符/非终结符)
+	FlexState fs; 
+	/*
+	对于终结符: cpp-stylish
+	对于非终结符: 当前非终结符的语法子树的cpp code
+	*/
 	struct ParseAttr * attr;
 
-	void addchild(ParseNode * ptrn);
+	void addchild(ParseNode * ptrn, bool add_back = true);
 
 	ParseNode(const ParseNode &);
 	ParseNode & operator= (const ParseNode &) ;
 	ParseNode() : father(nullptr), attr(nullptr) {}
+	ParseNode(const FlexState & s, ParseNode * fa, ParseAttr * att = nullptr) : father(fa), attr(att), fs(s) {}
 	virtual ~ParseNode();
 };
 

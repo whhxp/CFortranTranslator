@@ -1,9 +1,12 @@
 %{
 #include <stdio.h>
 #include <string>
+#include <sstream>
 #include <iostream>
 #include "../tokenizer.h"
 #include "../parser.h"
+#include "../cgen.h"
+
 // 前置声明, 不然编译不过
 void yyerror(const char* s); 
 extern int yylex();
@@ -11,7 +14,10 @@ extern void set_buff(const std::string & code);
 extern void release_buff();
 #define YYDEBUG 1
 #define YYERROR_VERBOSE
-
+char codegen_buf[65535];
+using namespace std;
+string tabber(string &);
+ParseNode * flattern(ParseNode *); // eliminate right recursion
 %}
 
 %debug
@@ -66,13 +72,13 @@ extern void release_buff();
 		| YY_TRUE
 			{
 				ParseNode * newnode = new ParseNode();
-				newnode->fs.CurrentTerm = Term{ TokenMeta::Bool, $1.fs.CurrentTerm.what }; // bool true
+				newnode->fs.CurrentTerm = Term{ TokenMeta::Bool, "true" }; // bool true
 				$$ = *newnode;
 			}
 		| YY_FALSE
 			{
 				ParseNode * newnode = new ParseNode();
-				newnode->fs.CurrentTerm = Term{ TokenMeta::Bool, $1.fs.CurrentTerm.what }; // bool false
+				newnode->fs.CurrentTerm = Term{ TokenMeta::Bool, "false" }; // bool false
 				$$ = *newnode;
 			}
         | YY_COMPLEX
@@ -90,14 +96,16 @@ extern void release_buff();
 	exp : '(' exp ')' crlf
 			{
 				ParseNode * newnode = new ParseNode();
-				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, "(" };
+				sprintf(codegen_buf, "( %s )", $2.fs.CurrentTerm.what.c_str());
+				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
 				newnode->addchild(new ParseNode($2)); 
 				$$ = *newnode;
 			}
 		| exp '+' exp crlf
 			{
 				ParseNode * newnode = new ParseNode();
-				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, "+" };
+				sprintf(codegen_buf, "%s + %s", $1.fs.CurrentTerm.what.c_str(), $3.fs.CurrentTerm.what.c_str());
+				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
 				newnode->addchild(new ParseNode($1)); // left operand exp
 				newnode->addchild(new ParseNode($2)); // +
 				newnode->addchild(new ParseNode($3)); // tight operand exp
@@ -106,7 +114,8 @@ extern void release_buff();
 		| exp '-' exp crlf
 			{
 				ParseNode * newnode = new ParseNode();
-				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, "-" };
+				sprintf(codegen_buf, "%s - %s", $1.fs.CurrentTerm.what.c_str(), $3.fs.CurrentTerm.what.c_str());
+				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
 				newnode->addchild(new ParseNode($1)); // left operand exp
 				newnode->addchild(new ParseNode($2)); // -
 				newnode->addchild(new ParseNode($3)); // right operand exp
@@ -115,7 +124,8 @@ extern void release_buff();
 		| exp '*' exp crlf
 			{
 				ParseNode * newnode = new ParseNode();
-				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, "*" };
+				sprintf(codegen_buf, "%s * %s", $1.fs.CurrentTerm.what.c_str(), $3.fs.CurrentTerm.what.c_str());
+				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
 				newnode->addchild(new ParseNode($1)); // left operand exp
 				newnode->addchild(new ParseNode($2)); // *
 				newnode->addchild(new ParseNode($3)); // right operand exp
@@ -124,7 +134,8 @@ extern void release_buff();
 		| exp '/' exp crlf
 			{
 				ParseNode * newnode = new ParseNode();
-				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, "/" };
+				sprintf(codegen_buf, "%s / %s", $1.fs.CurrentTerm.what.c_str(), $3.fs.CurrentTerm.what.c_str());
+				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
 				newnode->addchild(new ParseNode($1)); // left operand exp
 				newnode->addchild(new ParseNode($2)); // /
 				newnode->addchild(new ParseNode($3)); // right operand exp
@@ -133,7 +144,8 @@ extern void release_buff();
 		| exp YY_POWER exp crlf
 			{
 				ParseNode * newnode = new ParseNode();
-				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, "**" };
+				sprintf(codegen_buf, "%s ** %s", $1.fs.CurrentTerm.what.c_str(), $3.fs.CurrentTerm.what.c_str());
+				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
 				newnode->addchild(new ParseNode($1)); // left operand exp
 				newnode->addchild(new ParseNode($2)); // **
 				newnode->addchild(new ParseNode($3)); // right operand exp
@@ -142,9 +154,20 @@ extern void release_buff();
         | '-' exp %prec YY_NEG crlf
 			{
 				ParseNode * newnode = new ParseNode();
-				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, "-" };
+				sprintf(codegen_buf, "(-%s)", $1.fs.CurrentTerm.what.c_str(), $3.fs.CurrentTerm.what.c_str());
+				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
 				newnode->addchild(new ParseNode($1)); // (-)
 				newnode->addchild(new ParseNode($2)); // only right operand exp
+				$$ = *newnode;
+			}
+		| exp '=' exp
+			{
+				ParseNode * newnode = new ParseNode();
+				sprintf(codegen_buf, "%s = %s", $1.fs.CurrentTerm.what.c_str(), $3.fs.CurrentTerm.what.c_str());
+				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
+				newnode->addchild(new ParseNode($1)); // left operand exp
+				newnode->addchild(new ParseNode($2)); // =
+				newnode->addchild(new ParseNode($3)); // right operand exp
 				$$ = *newnode;
 			}
 		| literal crlf
@@ -152,13 +175,28 @@ extern void release_buff();
 				// 
 				$$ = $1;
 			}
-		| variable
+		| variable crlf
 			{
 				// 
 				$$ = $1;
 			}
 
 	stmt : exp
+			{
+				ParseNode * newnode = new ParseNode();
+				sprintf(codegen_buf, "%s ;\n", $1.fs.CurrentTerm.what.c_str());
+				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
+				newnode->addchild(new ParseNode($1)); // exp
+				$$ = *newnode;
+			}
+		| var_def
+			{
+				ParseNode * newnode = new ParseNode();
+				sprintf(codegen_buf, "%s ;\n", $1.fs.CurrentTerm.what.c_str());
+				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
+				newnode->addchild(new ParseNode($1)); // var_def
+				$$ = *newnode;
+			}
         | compound_stmt
         | output_stmt
 
@@ -170,36 +208,156 @@ extern void release_buff();
         | '*' ',' argtable
 
     type_spec : YY_INTEGER_T
+			{
+				$1.fs.CurrentTerm.what = typename_map.at($1.fs.CurrentTerm.what);
+				$$ = $1;
+			}
         | YY_FLOAT_T
-        | YY_STRING_T 
+			{
+				$1.fs.CurrentTerm.what = typename_map.at($1.fs.CurrentTerm.what);
+				$$ = $1;
+			}
+        | YY_STRING_T
+			{
+				$1.fs.CurrentTerm.what = typename_map.at($1.fs.CurrentTerm.what);
+				$$ = $1;
+			}
         | YY_COMPLEX_T
+			{
+				$1.fs.CurrentTerm.what = typename_map.at($1.fs.CurrentTerm.what);
+				$$ = $1;
+			}
         | YY_BOOL_T
+			{
+				$1.fs.CurrentTerm.what = typename_map.at($1.fs.CurrentTerm.what);
+				$$ = $1;
+			}
 
 	slice : exp ':' exp
 			{
-				/* arr[from: to] */
+				/* arr[from : to] */
+				ParseNode * newnode = new ParseNode();
+				/* target code of slice depend on context */
+				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, "" };
+				newnode->addchild(new ParseNode($1)); // lower bound
+				newnode->addchild(new ParseNode($3)); // upper bound
+				$$ = *newnode;
 			}
 		| exp ':' exp ':' exp
 			{
+				/* arr[from : to] */
+				ParseNode * newnode = new ParseNode();
+				/* target code of slice depend on context */
+				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, "" };
+				newnode->addchild(new ParseNode($1)); // lower bound
+				newnode->addchild(new ParseNode($3)); // upper bound
+				newnode->addchild(new ParseNode($5)); // step
+				$$ = *newnode;
+			}
+	def_slice : '(' exp ',' exp ')'
+			{
+				/* arr[from : to] */
+				ParseNode * newnode = new ParseNode();
+				/* target code of slice depend on context */
+				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, "" };
+				newnode->addchild(new ParseNode($2)); // lower bound
+				newnode->addchild(new ParseNode($4)); // upper bound
+				$$ = *newnode;
 			}
 
     var_def : type_spec YY_DOUBLECOLON paramtable
 			{
 				/*  */
+				ParseNode * newnode = new ParseNode();
+				sprintf(codegen_buf, "%s %s", $1.fs.CurrentTerm.what.c_str(), $3.fs.CurrentTerm.what.c_str());
+				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
+				newnode->addchild(new ParseNode($1)); // type
+				newnode->addchild(new ParseNode($3)); // paramtable
+				$$ = *newnode;
 			}
-		| type_spec ',' YY_DIMENSION '(' slice ')' YY_DOUBLECOLON paramtable
+		| type_spec ',' YY_DIMENSION  def_slice  YY_DOUBLECOLON paramtable
 			{
 				/* array decl */
+				ParseNode * newnode = new ParseNode();
+				string arr_decl = "";
+				newnode->addchild(new ParseNode($1)); // type
+				newnode->addchild(new ParseNode($4)); // slice
+				ParseNode * pn = new ParseNode($6); //paramtable
+				newnode->addchild(pn); // paramtable
+
+					for (int i = 0; i < pn->child.size() ; i++)
+					{
+						// for each variable in flatterned paramtable
+						sprintf(codegen_buf, "forarr<%s> %s = forarr(%s, %s);", $1.fs.CurrentTerm.what.c_str(),  pn->child[i]->child[0]->fs.CurrentTerm.what.c_str(),  $4.child[0]->fs.CurrentTerm.what.c_str(),  $4.child[1]->fs.CurrentTerm.what.c_str() );
+						arr_decl += codegen_buf;
+						arr_decl += '\n';
+					}
+				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, arr_decl };
+				$$ = *newnode;
 			}
 
-    paramtable : YY_WORD
+    paramtable : variable
 			{
 				/* paramtable is used in function decl */
+				/* this paramtable has only one value */
+				ParseNode * newnode = new ParseNode();
+				sprintf(codegen_buf, "%s", $1.fs.CurrentTerm.what.c_str());
+				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
+					ParseNode * variablenode = new ParseNode();
+					sprintf(codegen_buf, "%s", $1.fs.CurrentTerm.what.c_str());
+					variablenode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
+					variablenode->addchild( new ParseNode($1) ); // type
+					FlexState fs; fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string("void") };
+					variablenode->addchild( new ParseNode(fs, newnode) ); // dummy initial
+					newnode->addchild(variablenode);
+				$$ = *newnode;
 			}
-        | YY_WORD '=' exp
-        | YY_WORD ',' argtable        
-        | YY_WORD '=' exp
-        | YY_WORD '=' exp ',' argtable
+        | variable '=' exp
+			{
+				/* initial value is required in parse tree because it can be an non-terminal `exp` */
+				ParseNode * newnode = new ParseNode();
+				sprintf(codegen_buf, "%s = %s", $1.fs.CurrentTerm.what.c_str(), $3.fs.CurrentTerm.what.c_str());
+				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
+					ParseNode * variablenode = new ParseNode();
+					sprintf(codegen_buf, "%s = %s", $1.fs.CurrentTerm.what.c_str(), $3.fs.CurrentTerm.what.c_str());
+					variablenode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
+					variablenode->addchild(new ParseNode($1)); // type
+					variablenode->addchild(new ParseNode($3)); // initial
+				newnode->addchild(variablenode);
+				newnode = flattern(newnode);
+				$$ = *newnode;
+			}
+        | variable ',' paramtable
+			{
+				ParseNode * newnode = new ParseNode();
+				sprintf(codegen_buf, "%s, %s", $1.fs.CurrentTerm.what.c_str(), $3.fs.CurrentTerm.what.c_str());
+				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
+					ParseNode * variablenode = new ParseNode();
+					sprintf(codegen_buf, "%s", $1.fs.CurrentTerm.what.c_str());
+					variablenode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
+					variablenode->addchild(new ParseNode($1)); // type
+					FlexState fs; fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string("void") };
+					variablenode->addchild(new ParseNode(fs, newnode)); // dummy initial
+				newnode->addchild(variablenode);
+				newnode->addchild(new ParseNode($3)); // paramtable
+				newnode = flattern(newnode);
+				$$ = *newnode;
+			}
+        | variable '=' exp ',' paramtable
+			{
+				ParseNode * newnode = new ParseNode();
+				sprintf(codegen_buf, "%s = %s, %s", $1.fs.CurrentTerm.what.c_str(), $3.fs.CurrentTerm.what.c_str(), $5.fs.CurrentTerm.what.c_str());
+				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
+					ParseNode * variablenode = new ParseNode();
+					sprintf(codegen_buf, "%s", $1.fs.CurrentTerm.what.c_str());
+					variablenode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
+					variablenode->addchild(new ParseNode($1)); // type
+					variablenode->addchild(new ParseNode($3)); // initial
+				newnode->addchild(variablenode);
+				newnode->addchild(new ParseNode($5)); // paramtable
+				newnode = flattern(newnode);
+				$$ = *newnode;
+			}
 
     argtable : exp
 			{
@@ -212,7 +370,8 @@ extern void release_buff();
 	if_stmt : YY_IF exp YY_THEN crlf suite YY_END YY_IF crlf
 			{
 				ParseNode * newnode = new ParseNode();
-				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, "if" };
+				sprintf(codegen_buf, "if (%s) {\n%s}", $2.fs.CurrentTerm.what.c_str(), tabber($5.fs.CurrentTerm.what).c_str());
+				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
 				newnode->addchild(new ParseNode($1)); // if
 				newnode->addchild(new ParseNode($2)); // exp
 				newnode->addchild(new ParseNode($5)); // suite
@@ -221,7 +380,8 @@ extern void release_buff();
 		| YY_IF exp YY_THEN crlf suite YY_ELSE crlf suite YY_END YY_IF crlf
 			{
 				ParseNode * newnode = new ParseNode();
-				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, "if-else" };
+				sprintf(codegen_buf, "if (%s) {\n%s}\nelse {\n %s}", $2.fs.CurrentTerm.what.c_str(), tabber($5.fs.CurrentTerm.what).c_str(), tabber($8.fs.CurrentTerm.what).c_str());
+				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
 				newnode->addchild(new ParseNode($1)); // if
 				newnode->addchild(new ParseNode($2)); // exp
 				newnode->addchild(new ParseNode($5)); // suite
@@ -232,7 +392,8 @@ extern void release_buff();
 		| YY_IF exp YY_THEN crlf suite elseif_stmt YY_END YY_IF crlf
 			{
 				ParseNode * newnode = new ParseNode();
-				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, "if-elseif" };
+				sprintf(codegen_buf, "if (%s) {\n%s}\n%s", $2.fs.CurrentTerm.what.c_str(), tabber($5.fs.CurrentTerm.what).c_str(), $6.fs.CurrentTerm.what.c_str());
+				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
 				newnode->addchild(new ParseNode($1)); // if
 				newnode->addchild(new ParseNode($2)); // exp
 				newnode->addchild(new ParseNode($5)); // suite
@@ -242,7 +403,8 @@ extern void release_buff();
 		| YY_IF exp YY_THEN crlf suite elseif_stmt YY_ELSE crlf suite YY_END YY_IF
 			{
 				ParseNode * newnode = new ParseNode();
-				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, "if-elseif-else" };
+				sprintf(codegen_buf, "if (%s) {\n%s}\nelse {\n%s}%s", $1.fs.CurrentTerm.what.c_str(), tabber($3.fs.CurrentTerm.what).c_str(), tabber($6.fs.CurrentTerm.what).c_str(), $9.fs.CurrentTerm.what.c_str());
+				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
 				newnode->addchild(new ParseNode($1)); // if
 				newnode->addchild(new ParseNode($2)); // exp
 				newnode->addchild(new ParseNode($5)); // suite
@@ -253,7 +415,8 @@ extern void release_buff();
 	elseif_stmt : YY_ELSEIF exp YY_THEN crlf suite
 			{
 				ParseNode * newnode = new ParseNode();
-				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, "elseif" };
+				sprintf(codegen_buf, "else if(%s) {\n%s}", $2.fs.CurrentTerm.what.c_str(), tabber($5.fs.CurrentTerm.what).c_str());
+				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
 				newnode->addchild(new ParseNode($1)); // elseif
 				newnode->addchild(new ParseNode($2)); // exp
 				newnode->addchild(new ParseNode($5)); // suite
@@ -263,7 +426,8 @@ extern void release_buff();
 		| YY_ELSEIF exp YY_THEN crlf suite elseif_stmt
 			{
 				ParseNode * newnode = new ParseNode();
-				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, "elseif-else-if" };
+				sprintf(codegen_buf, "else if{\n%s}\n%s", $2.fs.CurrentTerm.what.c_str(), tabber($5.fs.CurrentTerm.what).c_str(), $6.fs.CurrentTerm.what.c_str());
+				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
 				newnode->addchild(new ParseNode($1)); // elseif
 				newnode->addchild(new ParseNode($2)); // exp
 				newnode->addchild(new ParseNode($5)); // suite
@@ -273,13 +437,37 @@ extern void release_buff();
 	do_stmt : YY_DO crlf suite YY_END YY_DO crlf
 			{
 				ParseNode * newnode = new ParseNode();
-				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, "do" };
+				sprintf(codegen_buf, "do{\n%s}", tabber($3.fs.CurrentTerm.what).c_str());
+				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
 				newnode->addchild(new ParseNode($1)); // do
 				newnode->addchild(new ParseNode($3)); // suite
 				$$ = *newnode;
 			}
-		| YY_DO YY_WORD '=' exp ',' exp suite YY_END YY_DO
-		| YY_DO YY_WORD '=' exp ',' exp ',' exp suite YY_END YY_DO
+		| YY_DO variable '=' exp ',' exp crlf suite YY_END YY_DO
+			{
+				ParseNode * newnode = new ParseNode();
+				sprintf(codegen_buf, "for(%s = %s; %s < %s; %s++){\n%s}", $2.fs.CurrentTerm.what.c_str(), $4.fs.CurrentTerm.what.c_str(), $2.fs.CurrentTerm.what.c_str(), $6.fs.CurrentTerm.what.c_str(), $2.fs.CurrentTerm.what.c_str(), tabber($8.fs.CurrentTerm.what).c_str());
+				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
+				newnode->addchild(new ParseNode($1)); // do
+				newnode->addchild(new ParseNode($2)); // varname
+				newnode->addchild(new ParseNode($4)); // begin
+				newnode->addchild(new ParseNode($6)); // end
+				newnode->addchild(new ParseNode($8)); // suite
+				$$ = *newnode;
+			}
+		| YY_DO variable '=' exp ',' exp ',' exp crlf suite YY_END YY_DO
+			{
+				ParseNode * newnode = new ParseNode();
+				sprintf(codegen_buf, "for(%s = %s; %s < %s; %s+=%s){\n%s}", $2.fs.CurrentTerm.what.c_str(), $4.fs.CurrentTerm.what.c_str(), $2.fs.CurrentTerm.what.c_str(), $6.fs.CurrentTerm.what.c_str(), $2.fs.CurrentTerm.what.c_str(), $8.fs.CurrentTerm.what.c_str(), tabber($9.fs.CurrentTerm.what).c_str());
+				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
+				newnode->addchild(new ParseNode($1)); // do
+				newnode->addchild(new ParseNode($2)); // varname
+				newnode->addchild(new ParseNode($4)); // begin
+				newnode->addchild(new ParseNode($6)); // end
+				newnode->addchild(new ParseNode($8)); // step
+				newnode->addchild(new ParseNode($9)); // suite
+				$$ = *newnode;
+			}
 
     suite : stmt
         | stmt suite
@@ -303,6 +491,35 @@ extern void release_buff();
 void yyerror(const char* s)
 {
 	fprintf(stderr, "%s\n", s);
+}
+string tabber(string & src) {
+	string newline;
+	string ans = "";
+	std::istringstream f(src);
+	while (getline(f, newline) ) {
+		ans += '\t';
+		ans += newline;
+		ans += '\n';
+	}
+	return ans;
+}
+ParseNode * flattern(ParseNode * pn) {
+	/* it cant work well because it create a whole noew tree copy too much */
+	if (pn->child.size() == 2) {
+		ParseNode * newp = new ParseNode();
+		newp->addchild(new ParseNode(*pn->child[0]));
+		for (int i = 0; i < pn->child[1]->child.size(); i++)
+		{
+			newp->addchild(new ParseNode(*pn->child[1]->child[i]));
+		}
+		newp->fs = pn->fs;
+		newp->father = pn->father;
+		delete pn;
+		return newp;
+	}
+	else {
+		return pn;
+	}
 }
 int parse(std::string code) {
 #ifdef USE_YACC

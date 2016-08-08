@@ -1,3 +1,4 @@
+@output(for90.tab.cpp@)@
 /* A Bison parser, made by GNU Bison 2.7.  */
 
 /* Bison implementation for Yacc-like parsers in C
@@ -80,13 +81,13 @@ extern void set_buff(const std::string & code);
 extern void release_buff();
 #define YYDEBUG 1
 #define YYERROR_VERBOSE
-char codegen_buf[65535];
+char codegen_buf@{65535@};
 using namespace std;
 string tabber(string &);
-ParseNode * flattern(ParseNode *); // eliminate right recursion
+ParseNode * flattern(ParseNode *);
 
 /* Line 371 of yacc.c  */
-#line 90 "for90.tab.cpp"
+#line @oline@ @ofile@
 
 # ifndef YY_NULL
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -105,7 +106,7 @@ ParseNode * flattern(ParseNode *); // eliminate right recursion
 #endif
 
 /* In a future release of Bison, this section will be replaced
-   by #include "for90.tab.h".  */
+   by #include "@basename(for90.tab.h@)".  */
 #ifndef YY_YY_FOR90_TAB_H_INCLUDED
 # define YY_YY_FOR90_TAB_H_INCLUDED
 /* Enabling traces.  */
@@ -224,7 +225,7 @@ int yyparse ();
 /* Copy the second part of user declarations.  */
 
 /* Line 390 of yacc.c  */
-#line 228 "for90.tab.cpp"
+#line @oline@ @ofile@
 
 #ifdef short
 # undef short
@@ -444,14 +445,14 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  33
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   384
+#define YYLAST   358
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  83
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  19
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  59
+#define YYNRULES  60
 /* YYNRULES -- Number of states.  */
 #define YYNSTATES  154
 
@@ -503,14 +504,15 @@ static const yytype_uint8 yytranslate[] =
 #if YYDEBUG
 /* YYPRHS[YYN] -- Index of the first RHS symbol of rule number YYN in
    YYRHS.  */
-static const yytype_uint8 yyprhs[] =
+static const yytype_uint16 yyprhs[] =
 {
        0,     0,     3,     5,     6,     8,    10,    12,    14,    16,
       18,    21,    23,    28,    33,    38,    43,    48,    53,    57,
-      61,    64,    67,    69,    71,    73,    75,    77,    84,    91,
-      98,   102,   104,   106,   108,   110,   112,   118,   122,   129,
-     131,   135,   139,   145,   147,   151,   153,   155,   164,   176,
-     186,   198,   204,   211,   218,   229,   242,   244,   247,   254
+      60,    63,    65,    67,    69,    71,    73,    80,    87,    94,
+      98,   100,   102,   104,   106,   108,   112,   118,   122,   131,
+     133,   137,   141,   145,   151,   153,   157,   159,   161,   170,
+     182,   192,   204,   210,   217,   224,   235,   248,   250,   253,
+     260
 };
 
 /* YYRHS -- A `-1'-separated list of the rules' RHS.  */
@@ -521,27 +523,28 @@ static const yytype_int8 yyrhs[] =
       -1,    21,    -1,    79,    87,    80,    84,    -1,    87,    74,
       87,    84,    -1,    87,    75,    87,    84,    -1,    87,    76,
       87,    84,    -1,    87,    77,    87,    84,    -1,    87,    16,
-      87,    84,    -1,    75,    87,    84,    -1,    87,    73,    87,
-      -1,    85,    84,    -1,    86,    84,    -1,    87,    -1,    93,
-      -1,    96,    -1,    89,    -1,    90,    -1,    79,    19,    81,
-      23,    80,    95,    -1,    79,    76,    81,    23,    80,    95,
-      -1,    79,    76,    81,    76,    80,    95,    -1,    76,    81,
-      95,    -1,    63,    -1,    64,    -1,    65,    -1,    66,    -1,
-      67,    -1,    79,    87,    81,    87,    80,    -1,    91,    17,
-      94,    -1,    91,    81,    62,    92,    17,    94,    -1,    86,
-      -1,    86,    73,    87,    -1,    86,    81,    94,    -1,    86,
-      73,    87,    81,    94,    -1,    87,    -1,    87,    81,    95,
-      -1,    97,    -1,    99,    -1,    29,    87,    30,    84,   100,
-      28,    29,    84,    -1,    29,    87,    30,    84,   100,    31,
-      84,   100,    28,    29,    84,    -1,    29,    87,    30,    84,
-     100,    98,    28,    29,    84,    -1,    29,    87,    30,    84,
-     100,    98,    31,    84,   100,    28,    29,    -1,    32,    87,
-      30,    84,   100,    -1,    32,    87,    30,    84,   100,    98,
-      -1,    34,    84,   100,    28,    34,    84,    -1,    34,    86,
-      73,    87,    81,    87,    84,   100,    28,    34,    -1,    34,
-      86,    73,    87,    81,    87,    81,    87,    84,   100,    28,
-      34,    -1,    88,    -1,    88,   100,    -1,    44,    21,   100,
-      28,    44,    21,    -1,    44,   100,    28,    44,    -1
+      87,    84,    -1,    75,    87,    84,    -1,    85,    84,    -1,
+      86,    84,    -1,    87,    -1,    93,    -1,    96,    -1,    89,
+      -1,    90,    -1,    79,    19,    81,    23,    80,    95,    -1,
+      79,    76,    81,    23,    80,    95,    -1,    79,    76,    81,
+      76,    80,    95,    -1,    76,    81,    95,    -1,    63,    -1,
+      64,    -1,    65,    -1,    66,    -1,    67,    -1,    87,    82,
+      87,    -1,    87,    82,    87,    82,    87,    -1,    91,    17,
+      94,    -1,    91,    81,    62,    79,    92,    80,    17,    94,
+      -1,    21,    -1,    21,    73,    87,    -1,    21,    81,    94,
+      -1,    21,    73,    87,    -1,    21,    73,    87,    81,    94,
+      -1,    87,    -1,    87,    81,    95,    -1,    97,    -1,    99,
+      -1,    29,    87,    30,    84,   100,    28,    29,    84,    -1,
+      29,    87,    30,    84,   100,    31,    84,   100,    28,    29,
+      84,    -1,    29,    87,    30,    84,   100,    98,    28,    29,
+      84,    -1,    29,    87,    30,    84,   100,    98,    31,    84,
+     100,    28,    29,    -1,    32,    87,    30,    84,   100,    -1,
+      32,    87,    30,    84,   100,    98,    -1,    34,    84,   100,
+      28,    34,    84,    -1,    34,    21,    73,    87,    81,    87,
+      84,   100,    28,    34,    -1,    34,    21,    73,    87,    81,
+      87,    81,    87,    84,   100,    28,    34,    -1,    88,    -1,
+      88,   100,    -1,    44,    21,   100,    28,    44,    21,    -1,
+      44,   100,    28,    44,    -1
 };
 
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
@@ -549,10 +552,11 @@ static const yytype_uint16 yyrline[] =
 {
        0,    48,    48,    49,    53,    60,    66,    72,    78,    84,
       87,    89,    96,   104,   114,   124,   134,   144,   154,   163,
-     173,   178,   184,   192,   200,   201,   203,   205,   206,   207,
-     208,   210,   215,   220,   225,   230,   257,   268,   278,   298,
-     314,   329,   345,   361,   365,   367,   367,   369,   379,   391,
-     402,   414,   425,   436,   445,   457,   471,   472,   474,   480
+     168,   174,   182,   190,   191,   193,   195,   196,   197,   198,
+     200,   205,   210,   215,   220,   226,   230,   234,   244,   249,
+     259,   260,   270,   271,   273,   277,   279,   279,   281,   291,
+     303,   314,   326,   337,   348,   357,   369,   383,   384,   386,
+     392
 };
 #endif
 
@@ -576,9 +580,9 @@ static const char *const yytname[] =
   "YY_FLOAT_T", "YY_STRING_T", "YY_COMPLEX_T", "YY_BOOL_T", "YY_WRITE",
   "YY_READ", "YY_PRINT", "YY_OPEN", "YY_CLOSE", "'='", "'+'", "'-'", "'*'",
   "'/'", "'\\n'", "'('", "')'", "','", "':'", "$accept", "crlf", "literal",
-  "variable", "exp", "stmt", "output_stmt", "write", "type_spec",
-  "def_slice", "var_def", "paramtable", "argtable", "compound_stmt",
-  "if_stmt", "elseif_stmt", "do_stmt", "suite", "program", YY_NULL
+  "variable", "exp", "stmt", "output_stmt", "write", "type_spec", "slice",
+  "var_def", "paramtable", "argtable", "compound_stmt", "if_stmt",
+  "elseif_stmt", "do_stmt", "suite", "program", YY_NULL
 };
 #endif
 
@@ -604,21 +608,23 @@ static const yytype_uint8 yyr1[] =
 {
        0,    83,    84,    84,    85,    85,    85,    85,    85,    85,
       85,    86,    87,    87,    87,    87,    87,    87,    87,    87,
-      87,    87,    88,    88,    88,    88,    89,    90,    90,    90,
-      90,    91,    91,    91,    91,    91,    92,    93,    93,    94,
-      94,    94,    94,    95,    95,    96,    96,    97,    97,    97,
-      97,    98,    98,    99,    99,    99,   100,   100,   101,   101
+      87,    88,    88,    88,    88,    89,    90,    90,    90,    90,
+      91,    91,    91,    91,    91,    92,    92,    93,    93,    94,
+      94,    94,    94,    94,    95,    95,    96,    96,    97,    97,
+      97,    97,    98,    98,    99,    99,    99,   100,   100,   101,
+     101
 };
 
 /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
        0,     2,     1,     0,     1,     1,     1,     1,     1,     1,
-       2,     1,     4,     4,     4,     4,     4,     4,     3,     3,
-       2,     2,     1,     1,     1,     1,     1,     6,     6,     6,
-       3,     1,     1,     1,     1,     1,     5,     3,     6,     1,
-       3,     3,     5,     1,     3,     1,     1,     8,    11,     9,
-      11,     5,     6,     6,    10,    12,     1,     2,     6,     4
+       2,     1,     4,     4,     4,     4,     4,     4,     3,     2,
+       2,     1,     1,     1,     1,     1,     6,     6,     6,     3,
+       1,     1,     1,     1,     1,     3,     5,     3,     8,     1,
+       3,     3,     3,     5,     1,     3,     1,     1,     8,    11,
+       9,    11,     5,     6,     6,    10,    12,     1,     2,     6,
+       4
 };
 
 /* YYDEFACT[STATE-NAME] -- Default reduction number in state STATE-NUM.
@@ -627,154 +633,148 @@ static const yytype_uint8 yyr2[] =
 static const yytype_uint8 yydefact[] =
 {
        0,     0,     0,     0,     5,     4,     0,     6,     9,     7,
-       8,     0,     3,    31,    32,    33,    34,    35,     0,     0,
-       0,     3,     3,    22,     0,    25,    26,     0,    23,    24,
-      45,    46,     0,     1,    10,    11,     0,     0,     0,     2,
-       0,     0,     3,     0,     5,     0,     0,    20,    21,     0,
-       0,     0,     0,     0,     0,    57,     0,     0,     0,     0,
-       3,     0,     0,    18,    43,    30,     0,     0,     3,     3,
-      19,     3,     3,     3,     3,    39,    37,     0,    59,     0,
-       0,     0,     0,     0,     0,     0,     0,    12,    17,    13,
-      14,    15,    16,     0,     0,     0,     0,    58,     0,     3,
-       0,    44,     0,     0,     0,    40,    41,     0,     0,     0,
-       3,     0,     0,    53,     3,    27,    28,    29,     0,     0,
-      38,     3,     0,     0,     0,     3,     0,     0,    42,     0,
-      47,     0,     3,     3,     0,     3,     0,    36,     0,     0,
-      49,     0,     0,     0,     3,    51,     0,     0,    54,    48,
-      52,    50,     0,    55
+       8,     0,     3,    30,    31,    32,    33,    34,     0,     0,
+       0,     3,     3,    21,     0,    24,    25,     0,    22,    23,
+      46,    47,     0,     1,    10,    11,     0,     0,     0,     2,
+       0,     0,     3,     0,     5,     0,     0,    19,    20,     0,
+       0,     0,     0,     0,    58,     0,     0,     0,     0,     3,
+       0,     0,    18,    44,    29,     0,     0,     3,     3,     3,
+       3,     3,     3,    39,    37,     0,    60,     0,     0,     0,
+       0,     0,     0,     0,     0,    12,    17,    13,    14,    15,
+      16,     0,     0,     0,    59,     0,     0,     3,    45,     0,
+       0,     0,    40,    41,     0,     0,     0,     3,     0,     0,
+       3,    54,    26,    27,    28,     0,     0,     0,     3,     0,
+       0,     0,     3,     0,     0,    43,    35,     0,    48,     0,
+       3,     3,     0,     3,     0,     0,    38,     0,     0,    50,
+       0,     0,     0,    36,     3,    52,     0,     0,    55,    49,
+      53,    51,     0,    56
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,    40,    21,    22,    23,    24,    25,    26,    27,    96,
-      28,    76,    65,    29,    30,   112,    31,    32,     2
+      -1,    41,    21,    22,    23,    24,    25,    26,    27,   105,
+      28,    74,    64,    29,    30,   109,    31,    32,     2
 };
 
 /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
    STATE-NUM.  */
-#define YYPACT_NINF -86
+#define YYPACT_NINF -77
 static const yytype_int16 yypact[] =
 {
-     -36,   234,    13,   -68,   -86,   -86,   150,   -86,   -86,   -86,
-     -86,   263,     0,   -86,   -86,   -86,   -86,   -86,   263,   -62,
-       5,    25,    25,   287,   167,   -86,   -86,   -14,   -86,   -86,
-     -86,   -86,    15,   -86,   -86,   -86,    16,   263,   295,   -86,
-     251,   -59,    87,   263,   -42,   -35,   271,   -86,   -86,   263,
-     263,   263,   263,   263,   263,   -86,    24,   -15,     6,    12,
-      25,    31,   263,   -86,    -4,   -86,    37,   -18,    25,    87,
-      11,    87,    87,    87,    87,   -66,   -86,   -17,   -86,    40,
-     251,    29,   164,   263,   -12,    -5,    -2,   -86,   -86,   -86,
-     -86,   -86,   -86,   263,    24,   263,    48,   -86,    10,    25,
-     263,   -86,   263,   263,   263,   231,   -86,   259,    24,    47,
-      25,   263,   -11,   -86,   131,   -86,   -86,   -86,    24,   263,
-     -86,    25,   251,   307,    53,    25,   263,   251,   -86,   279,
-     -86,    64,    25,    25,   251,    87,    74,   -86,    75,   251,
-     -86,    78,   251,    76,    25,    77,    82,    86,   -86,   -86,
-     -86,   -86,    84,   -86
+     -41,   197,     8,   -63,   -77,   -77,   136,   -77,   -77,   -77,
+     -77,   167,     3,   -77,   -77,   -77,   -77,   -77,   167,   -64,
+     279,    29,    29,   179,     0,   -77,   -77,   -12,   -77,   -77,
+     -77,   -77,    19,   -77,   -77,   -77,    20,   167,   241,   -77,
+     -23,   218,    45,   167,   -29,   -27,    22,   -77,   -77,   167,
+     167,   167,   167,   167,   -77,    35,    -3,    16,    18,    29,
+     167,    40,   -77,   108,   -77,    47,   -21,    29,    45,    45,
+      45,    45,    45,   -67,   -77,    -8,   -77,    52,   218,   214,
+      43,   167,     5,    10,    11,   -77,   -77,   -77,   -77,   -77,
+     -77,   167,    35,   167,   -77,     9,   167,    29,   -77,   167,
+     167,   167,   233,   -77,    99,    32,    59,    29,   167,   -19,
+       6,   -77,   -77,   -77,   -77,    35,   167,    83,    29,   218,
+     249,    81,    29,   167,   218,   -77,   132,    35,   -77,    86,
+      29,    29,   218,    45,    89,   167,   -77,    94,   218,   -77,
+      97,   218,    93,   179,    29,   102,   107,   110,   -77,   -77,
+     -77,   -77,   105,   -77
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -86,   -20,   -86,    -1,    46,   -86,   -86,   -86,   -86,   -86,
-     -86,   -85,   -67,   -86,   -86,   -26,   -86,    -6,   -86
+     -77,    36,   -77,   -77,    -7,   -77,   -77,   -77,   -77,   -77,
+     -77,   -76,    30,   -77,   -77,    -4,   -77,    -6,   -77
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
    positive, shift that token.  If negative, reduce the rule which
    number is the opposite.  If YYTABLE_NINF, syntax error.  */
-#define YYTABLE_NINF -57
+#define YYTABLE_NINF -58
 static const yytype_int16 yytable[] =
 {
-      36,    47,    48,    56,    39,    85,     3,    93,     1,   106,
-      34,    41,    49,    33,    62,    94,   101,   124,    55,    43,
-     125,    35,    63,   120,    44,     5,    35,    49,     7,    39,
-       8,     9,    10,   128,    61,   115,   116,   117,   109,    66,
-      80,   110,   111,    58,    59,    35,    67,    77,    87,    88,
-      78,    89,    90,    91,    92,    75,    79,    38,    86,    81,
-      84,    97,    95,    99,    42,   108,    46,    57,   102,    50,
-      51,    52,    53,    54,    98,   103,   121,    83,   104,   113,
-      18,    45,   133,    46,    37,    51,    52,    53,    54,    64,
-     122,    39,   138,    75,   127,    69,    70,    71,    72,    73,
-      74,   130,   143,    49,   144,   134,   146,    75,    82,   111,
-     148,   151,   139,   140,   152,   142,   131,    75,   153,   150,
-       0,   136,     0,     0,   149,     0,     0,     0,   141,    64,
-       0,     0,     0,   145,     0,    39,   147,     0,     0,   105,
-       0,   107,     0,     0,     0,     0,   114,    49,    64,    64,
-      64,     3,     0,     0,   -11,     0,     0,   123,     0,     0,
-      50,    51,    52,    53,    54,   129,   -11,     0,     3,     4,
-       5,    35,   135,     7,     0,     8,     9,    10,   -11,    11,
-      49,     0,     0,     0,    12,     0,     4,     5,    35,     0,
-       7,     0,     8,     9,    10,   -56,    11,     0,   -56,   -56,
-       0,    12,     0,     0,    50,    51,    52,    53,    54,     0,
-       0,     0,   126,    13,    14,    15,    16,    17,     0,     0,
-       0,     0,     0,   -11,   -11,    18,    19,   -11,     0,    20,
-      13,    14,    15,    16,    17,     3,     0,    50,    51,    52,
-      53,    54,    18,    19,     0,   100,    20,    49,     0,     0,
-       0,     0,     3,     4,     5,     6,     0,     7,     0,     8,
-       9,    10,     0,    11,     3,     0,     0,     0,    12,     0,
-       4,     5,    35,     0,     7,    49,     8,     9,    10,     0,
-      11,     0,     4,     5,    35,    12,     7,    49,     8,     9,
-      10,     0,     0,     0,     0,    49,     0,    13,    14,    15,
-      16,    17,     0,    49,    50,    51,    52,    53,    54,    18,
-      19,    49,   118,    20,    13,    14,    15,    16,    17,     0,
-       0,     0,     0,    49,     0,    60,    18,    19,     0,     0,
-      20,     0,    50,    51,    52,    53,    54,   132,    18,     0,
-     119,     0,    37,     0,    50,    51,    52,    53,    54,     0,
-       0,    68,    50,    51,    52,    53,    54,     0,     0,   137,
-      50,    51,    52,    53,    54,     0,     0,     0,    50,    51,
-      52,    53,    54,     0,     0,     0,     0,     0,     0,     0,
-      50,    51,    52,    53,    54
+      36,     3,    83,     1,    38,    55,    91,    39,    33,   121,
+      39,    42,   122,    46,    92,    34,   103,    43,    54,     4,
+       5,    35,    49,     7,    40,     8,     9,    10,   -57,    11,
+      46,   -57,   -57,    39,    12,    61,    63,   106,    49,   125,
+     107,   108,    68,    69,    70,    71,    72,    57,    58,    39,
+      60,   136,    65,    79,    66,    84,    73,    47,    48,    75,
+      76,    49,    77,    13,    14,    15,    16,    17,    80,    56,
+      82,    93,    95,    94,    63,    18,    19,    97,    62,    20,
+      50,    51,    52,    53,   102,    99,   104,   123,   118,   110,
+     100,   101,    63,    63,    63,    78,    50,    51,    52,    53,
+     127,   120,    67,    85,    86,    87,    88,    89,    90,   126,
+     131,    98,   117,   129,   137,    49,   133,   142,   134,    50,
+      51,    52,    53,   144,    49,   146,   140,   148,   143,   112,
+     113,   114,   145,   111,   108,   147,   151,     3,   152,   153,
+     -11,   150,     0,   119,     0,     0,   124,     0,    49,     0,
+       0,     0,   -11,     0,   128,     4,     5,    35,   132,     7,
+       0,     8,     9,    10,   -11,    11,   138,   139,     3,   141,
+      12,     0,     0,    50,    51,    52,    53,     0,     0,     0,
+     149,   116,    50,    51,    52,    53,     4,     5,    35,    81,
+       7,     0,     8,     9,    10,    49,     0,     0,     3,    13,
+      14,    15,    16,    17,     0,     0,    50,    51,    52,    53,
+     -11,    18,    19,   -11,   135,    20,     4,     5,     6,     3,
+       7,     0,     8,     9,    10,     0,    11,     0,     0,     0,
+      49,    12,     0,     0,     0,     0,     0,     4,     5,    35,
+       0,     7,    18,     8,     9,    10,    37,    11,     0,    49,
+       0,     0,    12,    50,    51,    52,    53,    49,     0,     0,
+      13,    14,    15,    16,    17,    49,     0,     0,     0,     0,
+       0,    59,    18,    19,     0,     0,    20,     0,     0,   130,
+       3,    13,    14,    15,    16,    17,     0,     0,    50,    51,
+      52,    53,     0,    18,    19,    96,     0,    20,    44,     5,
+      35,     0,     7,     0,     8,     9,    10,    50,    51,    52,
+      53,     0,     0,     0,   115,    50,    51,    52,    53,     0,
+       0,     0,     0,    50,    51,    52,    53,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,    18,    45,     0,     0,    37
 };
 
 #define yypact_value_is_default(Yystate) \
-  (!!((Yystate) == (-86)))
+  (!!((Yystate) == (-77)))
 
 #define yytable_value_is_error(Yytable_value) \
   YYID (0)
 
 static const yytype_int16 yycheck[] =
 {
-       6,    21,    22,    17,     4,    23,     1,    73,    44,    94,
-      78,    12,    16,     0,    73,    81,    83,    28,    24,    81,
-      31,    21,    42,   108,    19,    20,    21,    16,    23,     4,
-      25,    26,    27,   118,    40,   102,   103,   104,    28,    81,
-      60,    31,    32,    28,    28,    21,    81,    62,    68,    69,
-      44,    71,    72,    73,    74,    56,    44,    11,    76,    28,
-      23,    21,    79,    34,    18,    17,    20,    81,    80,    73,
-      74,    75,    76,    77,    80,    80,    29,    81,    80,    99,
-      75,    76,    29,    37,    79,    74,    75,    76,    77,    43,
-     110,     4,    28,    94,   114,    49,    50,    51,    52,    53,
-      54,   121,    28,    16,    29,   125,    28,   108,    62,    32,
-      34,    29,   132,   133,    28,   135,   122,   118,    34,   145,
-      -1,   127,    -1,    -1,   144,    -1,    -1,    -1,   134,    83,
-      -1,    -1,    -1,   139,    -1,     4,   142,    -1,    -1,    93,
-      -1,    95,    -1,    -1,    -1,    -1,   100,    16,   102,   103,
-     104,     1,    -1,    -1,     4,    -1,    -1,   111,    -1,    -1,
-      73,    74,    75,    76,    77,   119,    16,    -1,     1,    19,
-      20,    21,   126,    23,    -1,    25,    26,    27,    28,    29,
-      16,    -1,    -1,    -1,    34,    -1,    19,    20,    21,    -1,
-      23,    -1,    25,    26,    27,    28,    29,    -1,    31,    32,
-      -1,    34,    -1,    -1,    73,    74,    75,    76,    77,    -1,
-      -1,    -1,    81,    63,    64,    65,    66,    67,    -1,    -1,
-      -1,    -1,    -1,    73,    74,    75,    76,    77,    -1,    79,
-      63,    64,    65,    66,    67,     1,    -1,    73,    74,    75,
-      76,    77,    75,    76,    -1,    81,    79,    16,    -1,    -1,
-      -1,    -1,     1,    19,    20,    21,    -1,    23,    -1,    25,
-      26,    27,    -1,    29,     1,    -1,    -1,    -1,    34,    -1,
-      19,    20,    21,    -1,    23,    16,    25,    26,    27,    -1,
-      29,    -1,    19,    20,    21,    34,    23,    16,    25,    26,
-      27,    -1,    -1,    -1,    -1,    16,    -1,    63,    64,    65,
-      66,    67,    -1,    16,    73,    74,    75,    76,    77,    75,
-      76,    16,    81,    79,    63,    64,    65,    66,    67,    -1,
-      -1,    -1,    -1,    16,    -1,    30,    75,    76,    -1,    -1,
-      79,    -1,    73,    74,    75,    76,    77,    30,    75,    -1,
-      81,    -1,    79,    -1,    73,    74,    75,    76,    77,    -1,
-      -1,    80,    73,    74,    75,    76,    77,    -1,    -1,    80,
-      73,    74,    75,    76,    77,    -1,    -1,    -1,    73,    74,
-      75,    76,    77,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      73,    74,    75,    76,    77
+       6,     1,    23,    44,    11,    17,    73,     4,     0,    28,
+       4,    18,    31,    20,    81,    78,    92,    81,    24,    19,
+      20,    21,    16,    23,    21,    25,    26,    27,    28,    29,
+      37,    31,    32,     4,    34,    41,    43,    28,    16,   115,
+      31,    32,    49,    50,    51,    52,    53,    28,    28,     4,
+      73,   127,    81,    60,    81,    76,    21,    21,    22,    62,
+      44,    16,    44,    63,    64,    65,    66,    67,    28,    81,
+      23,    79,    78,    21,    81,    75,    76,    34,    42,    79,
+      74,    75,    76,    77,    91,    80,    93,    81,    29,    96,
+      80,    80,    99,   100,   101,    59,    74,    75,    76,    77,
+      17,   108,    80,    67,    68,    69,    70,    71,    72,   116,
+      29,    81,    80,   119,    28,    16,   123,    28,   124,    74,
+      75,    76,    77,    29,    16,    28,   132,    34,   135,    99,
+     100,   101,   138,    97,    32,   141,    29,     1,    28,    34,
+       4,   145,    -1,   107,    -1,    -1,   110,    -1,    16,    -1,
+      -1,    -1,    16,    -1,   118,    19,    20,    21,   122,    23,
+      -1,    25,    26,    27,    28,    29,   130,   131,     1,   133,
+      34,    -1,    -1,    74,    75,    76,    77,    -1,    -1,    -1,
+     144,    82,    74,    75,    76,    77,    19,    20,    21,    81,
+      23,    -1,    25,    26,    27,    16,    -1,    -1,     1,    63,
+      64,    65,    66,    67,    -1,    -1,    74,    75,    76,    77,
+      74,    75,    76,    77,    82,    79,    19,    20,    21,     1,
+      23,    -1,    25,    26,    27,    -1,    29,    -1,    -1,    -1,
+      16,    34,    -1,    -1,    -1,    -1,    -1,    19,    20,    21,
+      -1,    23,    75,    25,    26,    27,    79,    29,    -1,    16,
+      -1,    -1,    34,    74,    75,    76,    77,    16,    -1,    -1,
+      63,    64,    65,    66,    67,    16,    -1,    -1,    -1,    -1,
+      -1,    30,    75,    76,    -1,    -1,    79,    -1,    -1,    30,
+       1,    63,    64,    65,    66,    67,    -1,    -1,    74,    75,
+      76,    77,    -1,    75,    76,    81,    -1,    79,    19,    20,
+      21,    -1,    23,    -1,    25,    26,    27,    74,    75,    76,
+      77,    -1,    -1,    -1,    81,    74,    75,    76,    77,    -1,
+      -1,    -1,    -1,    74,    75,    76,    77,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    75,    76,    -1,    -1,    79
 };
 
 /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
@@ -785,17 +785,17 @@ static const yytype_uint8 yystos[] =
       27,    29,    34,    63,    64,    65,    66,    67,    75,    76,
       79,    85,    86,    87,    88,    89,    90,    91,    93,    96,
       97,    99,   100,     0,    78,    21,   100,    79,    87,     4,
-      84,    86,    87,    81,    19,    76,    87,    84,    84,    16,
-      73,    74,    75,    76,    77,   100,    17,    81,    28,    28,
-      30,   100,    73,    84,    87,    95,    81,    81,    80,    87,
-      87,    87,    87,    87,    87,    86,    94,    62,    44,    44,
-      84,    28,    87,    81,    23,    23,    76,    84,    84,    84,
-      84,    84,    84,    73,    81,    79,    92,    21,   100,    34,
-      81,    95,    80,    80,    80,    87,    94,    87,    17,    28,
-      31,    32,    98,    84,    87,    95,    95,    95,    81,    81,
-      94,    29,    84,    87,    28,    31,    81,    84,    94,    87,
-      84,   100,    30,    29,    84,    87,   100,    80,    28,    84,
-      84,   100,    84,    28,    29,   100,    28,   100,    34,    84,
+      21,    84,    87,    81,    19,    76,    87,    84,    84,    16,
+      74,    75,    76,    77,   100,    17,    81,    28,    28,    30,
+      73,   100,    84,    87,    95,    81,    81,    80,    87,    87,
+      87,    87,    87,    21,    94,    62,    44,    44,    84,    87,
+      28,    81,    23,    23,    76,    84,    84,    84,    84,    84,
+      84,    73,    81,    79,    21,   100,    81,    34,    95,    80,
+      80,    80,    87,    94,    87,    92,    28,    31,    32,    98,
+      87,    84,    95,    95,    95,    81,    82,    80,    29,    84,
+      87,    28,    31,    81,    84,    94,    87,    17,    84,   100,
+      30,    29,    84,    87,   100,    82,    94,    28,    84,    84,
+     100,    84,    28,    87,    29,   100,    28,   100,    34,    84,
       98,    29,    28,    34
 };
 
@@ -1004,7 +1004,7 @@ yy_reduce_print (yyvsp, yyrule)
     {
       YYFPRINTF (stderr, "   $%d = ", yyi + 1);
       yy_symbol_print (stderr, yyrhs[yyprhs[yyrule] + yyi],
-		       &(yyvsp[(yyi + 1) - (yynrhs)])
+		       &(yyvsp@{(yyi + 1) - (yynrhs)@})
 		       		       );
       YYFPRINTF (stderr, "\n");
     }
@@ -1602,7 +1602,7 @@ yyreduce:
     {
 				/* 该条目下的右部全部为单个终结符号(语法树的叶子节点), 因此$1全部来自lex程序 */
 				ParseNode * newnode = new ParseNode();
-				newnode->fs.CurrentTerm = Term{ TokenMeta::Float, (yyvsp[(1) - (1)]).fs.CurrentTerm.what }; // float number
+				newnode->fs.CurrentTerm = Term{ TokenMeta::Float, (yyvsp@{(1) - (1)@}).fs.CurrentTerm.what }; // float number
 				(yyval) = *newnode;
 			}
     break;
@@ -1612,7 +1612,7 @@ yyreduce:
 #line 61 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
-				newnode->fs.CurrentTerm = Term{ TokenMeta::Int, (yyvsp[(1) - (1)]).fs.CurrentTerm.what }; // int number
+				newnode->fs.CurrentTerm = Term{ TokenMeta::Int, (yyvsp@{(1) - (1)@}).fs.CurrentTerm.what }; // int number
 				(yyval) = *newnode;
 			}
     break;
@@ -1622,7 +1622,7 @@ yyreduce:
 #line 67 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
-				newnode->fs.CurrentTerm = Term{ TokenMeta::String, (yyvsp[(1) - (1)]).fs.CurrentTerm.what }; // string
+				newnode->fs.CurrentTerm = Term{ TokenMeta::String, (yyvsp@{(1) - (1)@}).fs.CurrentTerm.what }; // string
 				(yyval) = *newnode;
 			}
     break;
@@ -1658,7 +1658,7 @@ yyreduce:
 #line 90 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
-				newnode->fs.CurrentTerm = Term{ TokenMeta::UnknownVariant, (yyvsp[(1) - (1)]).fs.CurrentTerm.what }; // variant
+				newnode->fs.CurrentTerm = Term{ TokenMeta::UnknownVariant, (yyvsp@{(1) - (1)@}).fs.CurrentTerm.what }; // variant
 				(yyval) = *newnode;
 			}
     break;
@@ -1668,9 +1668,9 @@ yyreduce:
 #line 97 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
-				sprintf(codegen_buf, "( %s )", (yyvsp[(2) - (4)]).fs.CurrentTerm.what.c_str());
+				sprintf(codegen_buf, "( %s )", (yyvsp@{(2) - (4)@}).fs.CurrentTerm.what.c_str());
 				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
-				newnode->addchild(new ParseNode((yyvsp[(2) - (4)]))); 
+				newnode->addchild(new ParseNode((yyvsp@{(2) - (4)@}))); 
 				(yyval) = *newnode;
 			}
     break;
@@ -1680,11 +1680,11 @@ yyreduce:
 #line 105 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
-				sprintf(codegen_buf, "%s + %s", (yyvsp[(1) - (4)]).fs.CurrentTerm.what.c_str(), (yyvsp[(3) - (4)]).fs.CurrentTerm.what.c_str());
+				sprintf(codegen_buf, "%s + %s", (yyvsp@{(1) - (4)@}).fs.CurrentTerm.what.c_str(), (yyvsp@{(3) - (4)@}).fs.CurrentTerm.what.c_str());
 				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
-				newnode->addchild(new ParseNode((yyvsp[(1) - (4)]))); // left operand exp
-				newnode->addchild(new ParseNode((yyvsp[(2) - (4)]))); // +
-				newnode->addchild(new ParseNode((yyvsp[(3) - (4)]))); // tight operand exp
+				newnode->addchild(new ParseNode((yyvsp@{(1) - (4)@}))); // left operand exp
+				newnode->addchild(new ParseNode((yyvsp@{(2) - (4)@}))); // +
+				newnode->addchild(new ParseNode((yyvsp@{(3) - (4)@}))); // tight operand exp
 				(yyval) = *newnode;
 			}
     break;
@@ -1694,11 +1694,11 @@ yyreduce:
 #line 115 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
-				sprintf(codegen_buf, "%s - %s", (yyvsp[(1) - (4)]).fs.CurrentTerm.what.c_str(), (yyvsp[(3) - (4)]).fs.CurrentTerm.what.c_str());
+				sprintf(codegen_buf, "%s - %s", (yyvsp@{(1) - (4)@}).fs.CurrentTerm.what.c_str(), (yyvsp@{(3) - (4)@}).fs.CurrentTerm.what.c_str());
 				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
-				newnode->addchild(new ParseNode((yyvsp[(1) - (4)]))); // left operand exp
-				newnode->addchild(new ParseNode((yyvsp[(2) - (4)]))); // -
-				newnode->addchild(new ParseNode((yyvsp[(3) - (4)]))); // right operand exp
+				newnode->addchild(new ParseNode((yyvsp@{(1) - (4)@}))); // left operand exp
+				newnode->addchild(new ParseNode((yyvsp@{(2) - (4)@}))); // -
+				newnode->addchild(new ParseNode((yyvsp@{(3) - (4)@}))); // right operand exp
 				(yyval) = *newnode;
 			}
     break;
@@ -1708,11 +1708,11 @@ yyreduce:
 #line 125 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
-				sprintf(codegen_buf, "%s * %s", (yyvsp[(1) - (4)]).fs.CurrentTerm.what.c_str(), (yyvsp[(3) - (4)]).fs.CurrentTerm.what.c_str());
+				sprintf(codegen_buf, "%s * %s", (yyvsp@{(1) - (4)@}).fs.CurrentTerm.what.c_str(), (yyvsp@{(3) - (4)@}).fs.CurrentTerm.what.c_str());
 				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
-				newnode->addchild(new ParseNode((yyvsp[(1) - (4)]))); // left operand exp
-				newnode->addchild(new ParseNode((yyvsp[(2) - (4)]))); // *
-				newnode->addchild(new ParseNode((yyvsp[(3) - (4)]))); // right operand exp
+				newnode->addchild(new ParseNode((yyvsp@{(1) - (4)@}))); // left operand exp
+				newnode->addchild(new ParseNode((yyvsp@{(2) - (4)@}))); // *
+				newnode->addchild(new ParseNode((yyvsp@{(3) - (4)@}))); // right operand exp
 				(yyval) = *newnode;
 			}
     break;
@@ -1722,11 +1722,11 @@ yyreduce:
 #line 135 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
-				sprintf(codegen_buf, "%s / %s", (yyvsp[(1) - (4)]).fs.CurrentTerm.what.c_str(), (yyvsp[(3) - (4)]).fs.CurrentTerm.what.c_str());
+				sprintf(codegen_buf, "%s / %s", (yyvsp@{(1) - (4)@}).fs.CurrentTerm.what.c_str(), (yyvsp@{(3) - (4)@}).fs.CurrentTerm.what.c_str());
 				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
-				newnode->addchild(new ParseNode((yyvsp[(1) - (4)]))); // left operand exp
-				newnode->addchild(new ParseNode((yyvsp[(2) - (4)]))); // /
-				newnode->addchild(new ParseNode((yyvsp[(3) - (4)]))); // right operand exp
+				newnode->addchild(new ParseNode((yyvsp@{(1) - (4)@}))); // left operand exp
+				newnode->addchild(new ParseNode((yyvsp@{(2) - (4)@}))); // /
+				newnode->addchild(new ParseNode((yyvsp@{(3) - (4)@}))); // right operand exp
 				(yyval) = *newnode;
 			}
     break;
@@ -1736,11 +1736,11 @@ yyreduce:
 #line 145 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
-				sprintf(codegen_buf, "%s ** %s", (yyvsp[(1) - (4)]).fs.CurrentTerm.what.c_str(), (yyvsp[(3) - (4)]).fs.CurrentTerm.what.c_str());
+				sprintf(codegen_buf, "%s ** %s", (yyvsp@{(1) - (4)@}).fs.CurrentTerm.what.c_str(), (yyvsp@{(3) - (4)@}).fs.CurrentTerm.what.c_str());
 				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
-				newnode->addchild(new ParseNode((yyvsp[(1) - (4)]))); // left operand exp
-				newnode->addchild(new ParseNode((yyvsp[(2) - (4)]))); // **
-				newnode->addchild(new ParseNode((yyvsp[(3) - (4)]))); // right operand exp
+				newnode->addchild(new ParseNode((yyvsp@{(1) - (4)@}))); // left operand exp
+				newnode->addchild(new ParseNode((yyvsp@{(2) - (4)@}))); // **
+				newnode->addchild(new ParseNode((yyvsp@{(3) - (4)@}))); // right operand exp
 				(yyval) = *newnode;
 			}
     break;
@@ -1750,10 +1750,10 @@ yyreduce:
 #line 155 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
-				sprintf(codegen_buf, "(-%s)", (yyvsp[(1) - (3)]).fs.CurrentTerm.what.c_str(), (yyvsp[(3) - (3)]).fs.CurrentTerm.what.c_str());
+				sprintf(codegen_buf, "(-%s)", (yyvsp@{(1) - (3)@}).fs.CurrentTerm.what.c_str(), (yyvsp@{(3) - (3)@}).fs.CurrentTerm.what.c_str());
 				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
-				newnode->addchild(new ParseNode((yyvsp[(1) - (3)]))); // (-)
-				newnode->addchild(new ParseNode((yyvsp[(2) - (3)]))); // only right operand exp
+				newnode->addchild(new ParseNode((yyvsp@{(1) - (3)@}))); // (-)
+				newnode->addchild(new ParseNode((yyvsp@{(2) - (3)@}))); // only right operand exp
 				(yyval) = *newnode;
 			}
     break;
@@ -1761,400 +1761,322 @@ yyreduce:
   case 19:
 /* Line 1792 of yacc.c  */
 #line 164 "for90.y"
-    {
-				ParseNode * newnode = new ParseNode();
-				sprintf(codegen_buf, "%s = %s", (yyvsp[(1) - (3)]).fs.CurrentTerm.what.c_str(), (yyvsp[(3) - (3)]).fs.CurrentTerm.what.c_str());
-				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
-				newnode->addchild(new ParseNode((yyvsp[(1) - (3)]))); // left operand exp
-				newnode->addchild(new ParseNode((yyvsp[(2) - (3)]))); // =
-				newnode->addchild(new ParseNode((yyvsp[(3) - (3)]))); // right operand exp
-				(yyval) = *newnode;
+    { 
+				// 
+				(yyval) = (yyvsp@{(1) - (2)@});
 			}
     break;
 
   case 20:
 /* Line 1792 of yacc.c  */
-#line 174 "for90.y"
-    { 
+#line 169 "for90.y"
+    {
 				// 
-				(yyval) = (yyvsp[(1) - (2)]);
+				(yyval) = (yyvsp@{(1) - (2)@});
 			}
     break;
 
   case 21:
 /* Line 1792 of yacc.c  */
-#line 179 "for90.y"
+#line 175 "for90.y"
     {
-				// 
-				(yyval) = (yyvsp[(1) - (2)]);
+				ParseNode * newnode = new ParseNode();
+				sprintf(codegen_buf, "%s ;\n", (yyvsp@{(1) - (1)@}).fs.CurrentTerm.what.c_str());
+				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
+				newnode->addchild(new ParseNode((yyvsp@{(1) - (1)@}))); // exp
+				(yyval) = *newnode;
 			}
     break;
 
   case 22:
 /* Line 1792 of yacc.c  */
-#line 185 "for90.y"
+#line 183 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
-				sprintf(codegen_buf, "%s ;\n", (yyvsp[(1) - (1)]).fs.CurrentTerm.what.c_str());
+				sprintf(codegen_buf, "%s ;\n", (yyvsp@{(1) - (1)@}).fs.CurrentTerm.what.c_str());
 				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
-				newnode->addchild(new ParseNode((yyvsp[(1) - (1)]))); // exp
+				newnode->addchild(new ParseNode((yyvsp@{(1) - (1)@}))); // var_def
 				(yyval) = *newnode;
 			}
     break;
 
-  case 23:
+  case 30:
 /* Line 1792 of yacc.c  */
-#line 193 "for90.y"
+#line 201 "for90.y"
     {
-				ParseNode * newnode = new ParseNode();
-				sprintf(codegen_buf, "%s ;\n", (yyvsp[(1) - (1)]).fs.CurrentTerm.what.c_str());
-				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
-				newnode->addchild(new ParseNode((yyvsp[(1) - (1)]))); // var_def
-				(yyval) = *newnode;
+				(yyvsp@{(1) - (1)@}).fs.CurrentTerm.what = typename_map.at((yyvsp@{(1) - (1)@}).fs.CurrentTerm.what);
+				(yyval) = (yyvsp@{(1) - (1)@});
 			}
     break;
 
   case 31:
 /* Line 1792 of yacc.c  */
-#line 211 "for90.y"
+#line 206 "for90.y"
     {
-				(yyvsp[(1) - (1)]).fs.CurrentTerm.what = typename_map.at((yyvsp[(1) - (1)]).fs.CurrentTerm.what);
-				(yyval) = (yyvsp[(1) - (1)]);
+				(yyvsp@{(1) - (1)@}).fs.CurrentTerm.what = typename_map.at((yyvsp@{(1) - (1)@}).fs.CurrentTerm.what);
+				(yyval) = (yyvsp@{(1) - (1)@});
 			}
     break;
 
   case 32:
 /* Line 1792 of yacc.c  */
-#line 216 "for90.y"
+#line 211 "for90.y"
     {
-				(yyvsp[(1) - (1)]).fs.CurrentTerm.what = typename_map.at((yyvsp[(1) - (1)]).fs.CurrentTerm.what);
-				(yyval) = (yyvsp[(1) - (1)]);
+				(yyvsp@{(1) - (1)@}).fs.CurrentTerm.what = typename_map.at((yyvsp@{(1) - (1)@}).fs.CurrentTerm.what);
+				(yyval) = (yyvsp@{(1) - (1)@});
 			}
     break;
 
   case 33:
 /* Line 1792 of yacc.c  */
-#line 221 "for90.y"
+#line 216 "for90.y"
     {
-				(yyvsp[(1) - (1)]).fs.CurrentTerm.what = typename_map.at((yyvsp[(1) - (1)]).fs.CurrentTerm.what);
-				(yyval) = (yyvsp[(1) - (1)]);
+				(yyvsp@{(1) - (1)@}).fs.CurrentTerm.what = typename_map.at((yyvsp@{(1) - (1)@}).fs.CurrentTerm.what);
+				(yyval) = (yyvsp@{(1) - (1)@});
 			}
     break;
 
   case 34:
 /* Line 1792 of yacc.c  */
-#line 226 "for90.y"
+#line 221 "for90.y"
     {
-				(yyvsp[(1) - (1)]).fs.CurrentTerm.what = typename_map.at((yyvsp[(1) - (1)]).fs.CurrentTerm.what);
-				(yyval) = (yyvsp[(1) - (1)]);
+				(yyvsp@{(1) - (1)@}).fs.CurrentTerm.what = typename_map.at((yyvsp@{(1) - (1)@}).fs.CurrentTerm.what);
+				(yyval) = (yyvsp@{(1) - (1)@});
 			}
     break;
 
   case 35:
 /* Line 1792 of yacc.c  */
-#line 231 "for90.y"
+#line 227 "for90.y"
     {
-				(yyvsp[(1) - (1)]).fs.CurrentTerm.what = typename_map.at((yyvsp[(1) - (1)]).fs.CurrentTerm.what);
-				(yyval) = (yyvsp[(1) - (1)]);
+				/* arr@{from : to@} */
 			}
     break;
 
   case 36:
 /* Line 1792 of yacc.c  */
-#line 258 "for90.y"
+#line 231 "for90.y"
     {
-				/* arr[from : to] */
-				ParseNode * newnode = new ParseNode();
-				/* target code of slice depend on context */
-				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, "" };
-				newnode->addchild(new ParseNode((yyvsp[(2) - (5)]))); // lower bound
-				newnode->addchild(new ParseNode((yyvsp[(4) - (5)]))); // upper bound
-				(yyval) = *newnode;
 			}
     break;
 
   case 37:
 /* Line 1792 of yacc.c  */
-#line 269 "for90.y"
+#line 235 "for90.y"
     {
 				/*  */
 				ParseNode * newnode = new ParseNode();
-				sprintf(codegen_buf, "%s %s", (yyvsp[(1) - (3)]).fs.CurrentTerm.what.c_str(), (yyvsp[(3) - (3)]).fs.CurrentTerm.what.c_str());
+				sprintf(codegen_buf, "%s %s", (yyvsp@{(1) - (3)@}).fs.CurrentTerm.what.c_str(), (yyvsp@{(3) - (3)@}).fs.CurrentTerm.what.c_str());
 				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
-				newnode->addchild(new ParseNode((yyvsp[(1) - (3)]))); // type
-				newnode->addchild(new ParseNode((yyvsp[(3) - (3)]))); // paramtable
+				newnode->addchild(new ParseNode((yyvsp@{(1) - (3)@}))); // type
+				newnode->addchild(new ParseNode((yyvsp@{(3) - (3)@}))); // paramtable
 				(yyval) = *newnode;
 			}
     break;
 
   case 38:
 /* Line 1792 of yacc.c  */
-#line 279 "for90.y"
+#line 245 "for90.y"
     {
 				/* array decl */
-				ParseNode * newnode = new ParseNode();
-				string arr_decl = "";
-				newnode->addchild(new ParseNode((yyvsp[(1) - (6)]))); // type
-				newnode->addchild(new ParseNode((yyvsp[(4) - (6)]))); // slice
-				ParseNode * pn = new ParseNode((yyvsp[(6) - (6)])); //paramtable
-				newnode->addchild(pn); // paramtable
-
-					for (int i = 0; i < pn->child.size() ; i++)
-					{
-						sprintf(codegen_buf, "forarr<%s> %s = forarr(%s, %s);", (yyvsp[(1) - (6)]).fs.CurrentTerm.what.c_str(),  pn->child[i]->child[0]->fs.CurrentTerm.what.c_str(),  (yyvsp[(4) - (6)]).child[0]->fs.CurrentTerm.what.c_str(),  (yyvsp[(4) - (6)]).child[1]->fs.CurrentTerm.what.c_str() );
-						arr_decl += codegen_buf;
-						arr_decl += '\n';
-					}
-				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, arr_decl };
-				(yyval) = *newnode;
 			}
     break;
 
   case 39:
 /* Line 1792 of yacc.c  */
-#line 299 "for90.y"
+#line 250 "for90.y"
     {
 				/* paramtable is used in function decl */
 				/* this paramtable has only one value */
 				ParseNode * newnode = new ParseNode();
-				sprintf(codegen_buf, "%s", (yyvsp[(1) - (1)]).fs.CurrentTerm.what.c_str());
+				sprintf(codegen_buf, "%s", (yyvsp@{(1) - (1)@}).fs.CurrentTerm.what.c_str());
 				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
-					ParseNode * variablenode = new ParseNode();
-					sprintf(codegen_buf, "%s", (yyvsp[(1) - (1)]).fs.CurrentTerm.what.c_str());
-					variablenode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
-					variablenode->addchild( new ParseNode((yyvsp[(1) - (1)])) ); // type
-					FlexState fs; fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string("void") };
-					variablenode->addchild( new ParseNode(fs, newnode) ); // dummy initial
-					newnode->addchild(variablenode);
-				(yyval) = *newnode;
-			}
-    break;
-
-  case 40:
-/* Line 1792 of yacc.c  */
-#line 315 "for90.y"
-    {
-				/* initial value is required in parse tree because it can be an non-terminal `exp` */
-				ParseNode * newnode = new ParseNode();
-				sprintf(codegen_buf, "%s = %s", (yyvsp[(1) - (3)]).fs.CurrentTerm.what.c_str(), (yyvsp[(3) - (3)]).fs.CurrentTerm.what.c_str());
-				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
-					ParseNode * variablenode = new ParseNode();
-					sprintf(codegen_buf, "%s = %s", (yyvsp[(1) - (3)]).fs.CurrentTerm.what.c_str(), (yyvsp[(3) - (3)]).fs.CurrentTerm.what.c_str());
-					variablenode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
-					variablenode->addchild(new ParseNode((yyvsp[(1) - (3)]))); // type
-					variablenode->addchild(new ParseNode((yyvsp[(3) - (3)]))); // initial
-				newnode->addchild(variablenode);
-				newnode = flattern(newnode);
+				newnode->addchild(new ParseNode((yyvsp@{(1) - (1)@}))); // type
 				(yyval) = *newnode;
 			}
     break;
 
   case 41:
 /* Line 1792 of yacc.c  */
-#line 330 "for90.y"
+#line 261 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
-				sprintf(codegen_buf, "%s, %s", (yyvsp[(1) - (3)]).fs.CurrentTerm.what.c_str(), (yyvsp[(3) - (3)]).fs.CurrentTerm.what.c_str());
+				sprintf(codegen_buf, "%s, %s", (yyvsp@{(1) - (3)@}).fs.CurrentTerm.what.c_str(), (yyvsp@{(3) - (3)@}).fs.CurrentTerm.what.c_str());
 				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
-					ParseNode * variablenode = new ParseNode();
-					sprintf(codegen_buf, "%s", (yyvsp[(1) - (3)]).fs.CurrentTerm.what.c_str());
-					variablenode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
-					variablenode->addchild(new ParseNode((yyvsp[(1) - (3)]))); // type
-					FlexState fs; fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string("void") };
-					variablenode->addchild(new ParseNode(fs, newnode)); // dummy initial
-				newnode->addchild(variablenode);
-				newnode->addchild(new ParseNode((yyvsp[(3) - (3)]))); // paramtable
+				newnode->addchild(new ParseNode((yyvsp@{(1) - (3)@}))); // type
+				newnode->addchild(new ParseNode((yyvsp@{(3) - (3)@}))); // paramtable
 				newnode = flattern(newnode);
 				(yyval) = *newnode;
 			}
     break;
 
-  case 42:
+  case 44:
 /* Line 1792 of yacc.c  */
-#line 346 "for90.y"
-    {
-				ParseNode * newnode = new ParseNode();
-				sprintf(codegen_buf, "%s = %s, %s", (yyvsp[(1) - (5)]).fs.CurrentTerm.what.c_str(), (yyvsp[(3) - (5)]).fs.CurrentTerm.what.c_str(), (yyvsp[(5) - (5)]).fs.CurrentTerm.what.c_str());
-				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
-					ParseNode * variablenode = new ParseNode();
-					sprintf(codegen_buf, "%s", (yyvsp[(1) - (5)]).fs.CurrentTerm.what.c_str());
-					variablenode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
-					variablenode->addchild(new ParseNode((yyvsp[(1) - (5)]))); // type
-					variablenode->addchild(new ParseNode((yyvsp[(3) - (5)]))); // initial
-				newnode->addchild(variablenode);
-				newnode->addchild(new ParseNode((yyvsp[(5) - (5)]))); // paramtable
-				newnode = flattern(newnode);
-				(yyval) = *newnode;
-			}
-    break;
-
-  case 43:
-/* Line 1792 of yacc.c  */
-#line 362 "for90.y"
+#line 274 "for90.y"
     {
 				/* argtable is used in function call */
 			}
     break;
 
-  case 47:
-/* Line 1792 of yacc.c  */
-#line 370 "for90.y"
-    {
-				ParseNode * newnode = new ParseNode();
-				sprintf(codegen_buf, "if (%s) {\n%s}", (yyvsp[(2) - (8)]).fs.CurrentTerm.what.c_str(), tabber((yyvsp[(5) - (8)]).fs.CurrentTerm.what).c_str());
-				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
-				newnode->addchild(new ParseNode((yyvsp[(1) - (8)]))); // if
-				newnode->addchild(new ParseNode((yyvsp[(2) - (8)]))); // exp
-				newnode->addchild(new ParseNode((yyvsp[(5) - (8)]))); // suite
-				(yyval) = *newnode;
-			}
-    break;
-
   case 48:
 /* Line 1792 of yacc.c  */
-#line 380 "for90.y"
+#line 282 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
-				sprintf(codegen_buf, "if (%s) {\n%s}\nelse {\n %s}", (yyvsp[(2) - (11)]).fs.CurrentTerm.what.c_str(), tabber((yyvsp[(5) - (11)]).fs.CurrentTerm.what).c_str(), tabber((yyvsp[(8) - (11)]).fs.CurrentTerm.what).c_str());
+				sprintf(codegen_buf, "if (%s) {\n%s}", (yyvsp@{(2) - (8)@}).fs.CurrentTerm.what.c_str(), tabber((yyvsp@{(5) - (8)@}).fs.CurrentTerm.what).c_str());
 				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
-				newnode->addchild(new ParseNode((yyvsp[(1) - (11)]))); // if
-				newnode->addchild(new ParseNode((yyvsp[(2) - (11)]))); // exp
-				newnode->addchild(new ParseNode((yyvsp[(5) - (11)]))); // suite
-				newnode->addchild(new ParseNode((yyvsp[(6) - (11)]))); // else
-				newnode->addchild(new ParseNode((yyvsp[(8) - (11)]))); // else-stmt
+				newnode->addchild(new ParseNode((yyvsp@{(1) - (8)@}))); // if
+				newnode->addchild(new ParseNode((yyvsp@{(2) - (8)@}))); // exp
+				newnode->addchild(new ParseNode((yyvsp@{(5) - (8)@}))); // suite
 				(yyval) = *newnode;
 			}
     break;
 
   case 49:
 /* Line 1792 of yacc.c  */
-#line 392 "for90.y"
+#line 292 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
-				sprintf(codegen_buf, "if (%s) {\n%s}\n%s", (yyvsp[(2) - (9)]).fs.CurrentTerm.what.c_str(), tabber((yyvsp[(5) - (9)]).fs.CurrentTerm.what).c_str(), (yyvsp[(6) - (9)]).fs.CurrentTerm.what.c_str());
+				sprintf(codegen_buf, "if (%s) {\n%s}\nelse {\n %s}", (yyvsp@{(2) - (11)@}).fs.CurrentTerm.what.c_str(), tabber((yyvsp@{(5) - (11)@}).fs.CurrentTerm.what).c_str(), tabber((yyvsp@{(8) - (11)@}).fs.CurrentTerm.what).c_str());
 				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
-				newnode->addchild(new ParseNode((yyvsp[(1) - (9)]))); // if
-				newnode->addchild(new ParseNode((yyvsp[(2) - (9)]))); // exp
-				newnode->addchild(new ParseNode((yyvsp[(5) - (9)]))); // suite
-				newnode->addchild(new ParseNode((yyvsp[(6) - (9)]))); // recursive elseif-stmt
+				newnode->addchild(new ParseNode((yyvsp@{(1) - (11)@}))); // if
+				newnode->addchild(new ParseNode((yyvsp@{(2) - (11)@}))); // exp
+				newnode->addchild(new ParseNode((yyvsp@{(5) - (11)@}))); // suite
+				newnode->addchild(new ParseNode((yyvsp@{(6) - (11)@}))); // else
+				newnode->addchild(new ParseNode((yyvsp@{(8) - (11)@}))); // else-stmt
 				(yyval) = *newnode;
 			}
     break;
 
   case 50:
 /* Line 1792 of yacc.c  */
-#line 403 "for90.y"
+#line 304 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
-				sprintf(codegen_buf, "if (%s) {\n%s}\nelse {\n%s}%s", (yyvsp[(1) - (11)]).fs.CurrentTerm.what.c_str(), tabber((yyvsp[(3) - (11)]).fs.CurrentTerm.what).c_str(), tabber((yyvsp[(6) - (11)]).fs.CurrentTerm.what).c_str(), (yyvsp[(9) - (11)]).fs.CurrentTerm.what.c_str());
+				sprintf(codegen_buf, "if (%s) {\n%s}\n%s", (yyvsp@{(2) - (9)@}).fs.CurrentTerm.what.c_str(), tabber((yyvsp@{(5) - (9)@}).fs.CurrentTerm.what).c_str(), (yyvsp@{(6) - (9)@}).fs.CurrentTerm.what.c_str());
 				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
-				newnode->addchild(new ParseNode((yyvsp[(1) - (11)]))); // if
-				newnode->addchild(new ParseNode((yyvsp[(2) - (11)]))); // exp
-				newnode->addchild(new ParseNode((yyvsp[(5) - (11)]))); // suite
-				newnode->addchild(new ParseNode((yyvsp[(6) - (11)]))); // recursive elseif-stmt
-				newnode->addchild(new ParseNode((yyvsp[(9) - (11)]))); // else-stmt
+				newnode->addchild(new ParseNode((yyvsp@{(1) - (9)@}))); // if
+				newnode->addchild(new ParseNode((yyvsp@{(2) - (9)@}))); // exp
+				newnode->addchild(new ParseNode((yyvsp@{(5) - (9)@}))); // suite
+				newnode->addchild(new ParseNode((yyvsp@{(6) - (9)@}))); // recursive elseif-stmt
 				(yyval) = *newnode;
 			}
     break;
 
   case 51:
 /* Line 1792 of yacc.c  */
-#line 415 "for90.y"
+#line 315 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
-				sprintf(codegen_buf, "else if(%s) {\n%s}", (yyvsp[(2) - (5)]).fs.CurrentTerm.what.c_str(), tabber((yyvsp[(5) - (5)]).fs.CurrentTerm.what).c_str());
+				sprintf(codegen_buf, "if (%s) {\n%s}\nelse {\n%s}%s", (yyvsp@{(1) - (11)@}).fs.CurrentTerm.what.c_str(), tabber((yyvsp@{(3) - (11)@}).fs.CurrentTerm.what).c_str(), tabber((yyvsp@{(6) - (11)@}).fs.CurrentTerm.what).c_str(), (yyvsp@{(9) - (11)@}).fs.CurrentTerm.what.c_str());
 				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
-				newnode->addchild(new ParseNode((yyvsp[(1) - (5)]))); // elseif
-				newnode->addchild(new ParseNode((yyvsp[(2) - (5)]))); // exp
-				newnode->addchild(new ParseNode((yyvsp[(5) - (5)]))); // suite
+				newnode->addchild(new ParseNode((yyvsp@{(1) - (11)@}))); // if
+				newnode->addchild(new ParseNode((yyvsp@{(2) - (11)@}))); // exp
+				newnode->addchild(new ParseNode((yyvsp@{(5) - (11)@}))); // suite
+				newnode->addchild(new ParseNode((yyvsp@{(6) - (11)@}))); // recursive elseif-stmt
+				newnode->addchild(new ParseNode((yyvsp@{(9) - (11)@}))); // else-stmt
 				(yyval) = *newnode;
 			}
     break;
 
   case 52:
 /* Line 1792 of yacc.c  */
-#line 426 "for90.y"
+#line 327 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
-				sprintf(codegen_buf, "else if{\n%s}\n%s", (yyvsp[(2) - (6)]).fs.CurrentTerm.what.c_str(), tabber((yyvsp[(5) - (6)]).fs.CurrentTerm.what).c_str(), (yyvsp[(6) - (6)]).fs.CurrentTerm.what.c_str());
+				sprintf(codegen_buf, "else if(%s) {\n%s}", (yyvsp@{(2) - (5)@}).fs.CurrentTerm.what.c_str(), tabber((yyvsp@{(5) - (5)@}).fs.CurrentTerm.what).c_str());
 				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
-				newnode->addchild(new ParseNode((yyvsp[(1) - (6)]))); // elseif
-				newnode->addchild(new ParseNode((yyvsp[(2) - (6)]))); // exp
-				newnode->addchild(new ParseNode((yyvsp[(5) - (6)]))); // suite
-				newnode->addchild(new ParseNode((yyvsp[(6) - (6)]))); // another elseif-stmt
+				newnode->addchild(new ParseNode((yyvsp@{(1) - (5)@}))); // elseif
+				newnode->addchild(new ParseNode((yyvsp@{(2) - (5)@}))); // exp
+				newnode->addchild(new ParseNode((yyvsp@{(5) - (5)@}))); // suite
 				(yyval) = *newnode;
 			}
     break;
 
   case 53:
 /* Line 1792 of yacc.c  */
-#line 437 "for90.y"
+#line 338 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
-				sprintf(codegen_buf, "do{\n%s}", tabber((yyvsp[(3) - (6)]).fs.CurrentTerm.what).c_str());
+				sprintf(codegen_buf, "else if{\n%s}\n%s", (yyvsp@{(2) - (6)@}).fs.CurrentTerm.what.c_str(), tabber((yyvsp@{(5) - (6)@}).fs.CurrentTerm.what).c_str(), (yyvsp@{(6) - (6)@}).fs.CurrentTerm.what.c_str());
 				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
-				newnode->addchild(new ParseNode((yyvsp[(1) - (6)]))); // do
-				newnode->addchild(new ParseNode((yyvsp[(3) - (6)]))); // suite
+				newnode->addchild(new ParseNode((yyvsp@{(1) - (6)@}))); // elseif
+				newnode->addchild(new ParseNode((yyvsp@{(2) - (6)@}))); // exp
+				newnode->addchild(new ParseNode((yyvsp@{(5) - (6)@}))); // suite
+				newnode->addchild(new ParseNode((yyvsp@{(6) - (6)@}))); // another elseif-stmt
 				(yyval) = *newnode;
 			}
     break;
 
   case 54:
 /* Line 1792 of yacc.c  */
-#line 446 "for90.y"
+#line 349 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
-				sprintf(codegen_buf, "for(%s = %s; %s < %s; %s++){\n%s}", (yyvsp[(2) - (10)]).fs.CurrentTerm.what.c_str(), (yyvsp[(4) - (10)]).fs.CurrentTerm.what.c_str(), (yyvsp[(2) - (10)]).fs.CurrentTerm.what.c_str(), (yyvsp[(6) - (10)]).fs.CurrentTerm.what.c_str(), (yyvsp[(2) - (10)]).fs.CurrentTerm.what.c_str(), tabber((yyvsp[(8) - (10)]).fs.CurrentTerm.what).c_str());
+				sprintf(codegen_buf, "do{\n%s}", tabber((yyvsp@{(3) - (6)@}).fs.CurrentTerm.what).c_str());
 				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
-				newnode->addchild(new ParseNode((yyvsp[(1) - (10)]))); // do
-				newnode->addchild(new ParseNode((yyvsp[(2) - (10)]))); // varname
-				newnode->addchild(new ParseNode((yyvsp[(4) - (10)]))); // begin
-				newnode->addchild(new ParseNode((yyvsp[(6) - (10)]))); // end
-				newnode->addchild(new ParseNode((yyvsp[(8) - (10)]))); // suite
+				newnode->addchild(new ParseNode((yyvsp@{(1) - (6)@}))); // do
+				newnode->addchild(new ParseNode((yyvsp@{(3) - (6)@}))); // suite
 				(yyval) = *newnode;
 			}
     break;
 
   case 55:
 /* Line 1792 of yacc.c  */
-#line 458 "for90.y"
+#line 358 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
-				sprintf(codegen_buf, "for(%s = %s; %s < %s; %s+=%s){\n%s}", (yyvsp[(2) - (12)]).fs.CurrentTerm.what.c_str(), (yyvsp[(4) - (12)]).fs.CurrentTerm.what.c_str(), (yyvsp[(2) - (12)]).fs.CurrentTerm.what.c_str(), (yyvsp[(6) - (12)]).fs.CurrentTerm.what.c_str(), (yyvsp[(2) - (12)]).fs.CurrentTerm.what.c_str(), (yyvsp[(8) - (12)]).fs.CurrentTerm.what.c_str(), tabber((yyvsp[(9) - (12)]).fs.CurrentTerm.what).c_str());
+				sprintf(codegen_buf, "for(%s = %s; %s < %s; %s++){\n%s}", (yyvsp@{(2) - (10)@}).fs.CurrentTerm.what.c_str(), (yyvsp@{(4) - (10)@}).fs.CurrentTerm.what.c_str(), (yyvsp@{(2) - (10)@}).fs.CurrentTerm.what.c_str(), (yyvsp@{(6) - (10)@}).fs.CurrentTerm.what.c_str(), (yyvsp@{(2) - (10)@}).fs.CurrentTerm.what.c_str(), tabber((yyvsp@{(8) - (10)@}).fs.CurrentTerm.what).c_str());
 				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
-				newnode->addchild(new ParseNode((yyvsp[(1) - (12)]))); // do
-				newnode->addchild(new ParseNode((yyvsp[(2) - (12)]))); // varname
-				newnode->addchild(new ParseNode((yyvsp[(4) - (12)]))); // begin
-				newnode->addchild(new ParseNode((yyvsp[(6) - (12)]))); // end
-				newnode->addchild(new ParseNode((yyvsp[(8) - (12)]))); // step
-				newnode->addchild(new ParseNode((yyvsp[(9) - (12)]))); // suite
+				newnode->addchild(new ParseNode((yyvsp@{(1) - (10)@}))); // do
+				newnode->addchild(new ParseNode((yyvsp@{(2) - (10)@}))); // varname
+				newnode->addchild(new ParseNode((yyvsp@{(4) - (10)@}))); // begin
+				newnode->addchild(new ParseNode((yyvsp@{(6) - (10)@}))); // end
+				newnode->addchild(new ParseNode((yyvsp@{(8) - (10)@}))); // suite
 				(yyval) = *newnode;
 			}
     break;
 
-  case 58:
+  case 56:
 /* Line 1792 of yacc.c  */
-#line 475 "for90.y"
-    { 
+#line 370 "for90.y"
+    {
 				ParseNode * newnode = new ParseNode();
-				newnode->addchild(new ParseNode((yyvsp[(3) - (6)])));
-				program_tree = *newnode;
+				sprintf(codegen_buf, "for(%s = %s; %s < %s; %s+=%s){\n%s}", (yyvsp@{(2) - (12)@}).fs.CurrentTerm.what.c_str(), (yyvsp@{(4) - (12)@}).fs.CurrentTerm.what.c_str(), (yyvsp@{(2) - (12)@}).fs.CurrentTerm.what.c_str(), (yyvsp@{(6) - (12)@}).fs.CurrentTerm.what.c_str(), (yyvsp@{(2) - (12)@}).fs.CurrentTerm.what.c_str(), (yyvsp@{(8) - (12)@}).fs.CurrentTerm.what.c_str(), tabber((yyvsp@{(9) - (12)@}).fs.CurrentTerm.what).c_str());
+				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
+				newnode->addchild(new ParseNode((yyvsp@{(1) - (12)@}))); // do
+				newnode->addchild(new ParseNode((yyvsp@{(2) - (12)@}))); // varname
+				newnode->addchild(new ParseNode((yyvsp@{(4) - (12)@}))); // begin
+				newnode->addchild(new ParseNode((yyvsp@{(6) - (12)@}))); // end
+				newnode->addchild(new ParseNode((yyvsp@{(8) - (12)@}))); // step
+				newnode->addchild(new ParseNode((yyvsp@{(9) - (12)@}))); // suite
+				(yyval) = *newnode;
 			}
     break;
 
   case 59:
 /* Line 1792 of yacc.c  */
-#line 481 "for90.y"
+#line 387 "for90.y"
+    { 
+				ParseNode * newnode = new ParseNode();
+				newnode->addchild(new ParseNode((yyvsp@{(3) - (6)@})));
+				program_tree = *newnode;
+			}
+    break;
+
+  case 60:
+/* Line 1792 of yacc.c  */
+#line 393 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
-				newnode->addchild(new ParseNode((yyvsp[(2) - (4)])));
+				newnode->addchild(new ParseNode((yyvsp@{(2) - (4)@})));
 				program_tree = *newnode;
 			}
     break;
 
 
 /* Line 1792 of yacc.c  */
-#line 2158 "for90.tab.cpp"
+#line @oline@ @ofile@
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2386,7 +2308,7 @@ yyreturn:
 
 
 /* Line 2055 of yacc.c  */
-#line 487 "for90.y"
+#line 399 "for90.y"
 
 //extern "C" int yylex();
 
@@ -2407,21 +2329,27 @@ string tabber(string & src) {
 }
 ParseNode * flattern(ParseNode * pn) {
 	/* it cant work well because it create a whole noew tree copy too much */
-	if (pn->child.size() == 2) {
+	if (pn->child.size() == 1) {
+		return pn;
+	}
+	else {
 		ParseNode * newp = new ParseNode();
-		newp->addchild(new ParseNode(*pn->child[0]));
-		for (int i = 0; i < pn->child[1]->child.size(); i++)
+		newp->addchild(new ParseNode(*newp->child@{0@}));
+		for (int i = 0; i < pn->child@{1@}->child.size() ; i++)
 		{
-			newp->addchild(new ParseNode(*pn->child[1]->child[i]));
+			newp->addchild(new ParseNode(*newp->child@{1@}->child@{i@}));
 		}
 		newp->fs = pn->fs;
 		newp->father = pn->father;
 		delete pn;
 		return newp;
 	}
-	else {
-		return pn;
-	}
+	//assert(pn->child.size() >= 2);
+	//ParseNode * left_single = pn->child@{0@};
+	//// now 
+	//pn->child@{1@}->addchild(pn->child@{0@});
+	//pn->child@{0@} = pn->child@{1@};
+
 }
 int parse(std::string code) {
 #ifdef USE_YACC
@@ -2431,3 +2359,150 @@ int parse(std::string code) {
 #endif
 	return 0;
 }
+@output(for90.tab.h@)@
+/* A Bison parser, made by GNU Bison 2.7.  */
+
+/* Bison interface for Yacc-like parsers in C
+   
+      Copyright (C) 1984, 1989-1990, 2000-2012 Free Software Foundation, Inc.
+   
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+   
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+   
+   You should have received a copy of the GNU General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+
+/* As a special exception, you may create a larger work that contains
+   part or all of the Bison parser skeleton and distribute that work
+   under terms of your choice, so long as that work isn't itself a
+   parser generator using the skeleton or a modified version thereof
+   as a parser skeleton.  Alternatively, if you modify or redistribute
+   the parser skeleton itself, you may (at your option) remove this
+   special exception, which will cause the skeleton and the resulting
+   Bison output files to be licensed under the GNU General Public
+   License without this special exception.
+   
+   This special exception was added by the Free Software Foundation in
+   version 2.2 of Bison.  */
+
+#ifndef YY_YY_FOR90_TAB_H_INCLUDED
+# define YY_YY_FOR90_TAB_H_INCLUDED
+/* Enabling traces.  */
+#ifndef YYDEBUG
+# define YYDEBUG 1
+#endif
+#if YYDEBUG
+extern int yydebug;
+#endif
+
+/* Tokens.  */
+#ifndef YYTOKENTYPE
+# define YYTOKENTYPE
+   /* Put the tokens into the symbol table, so that GDB and other debuggers
+      know about them.  */
+   enum yytokentype {
+     YY_REQ_MORE = 258,
+     YY_CRLF = 259,
+     YY_GT = 260,
+     YY_GE = 261,
+     YY_EQ = 262,
+     YY_LE = 263,
+     YY_LT = 264,
+     YY_NEQ = 265,
+     YY_NEQV = 266,
+     YY_EQV = 267,
+     YY_ANDAND = 268,
+     YY_OROR = 269,
+     YY_NOT = 270,
+     YY_POWER = 271,
+     YY_DOUBLECOLON = 272,
+     YY_NEG = 273,
+     YY_INTEGER = 274,
+     YY_FLOAT = 275,
+     YY_WORD = 276,
+     YY_OPERATOR = 277,
+     YY_STRING = 278,
+     YY_ILLEGAL = 279,
+     YY_COMPLEX = 280,
+     YY_TRUE = 281,
+     YY_FALSE = 282,
+     YY_END = 283,
+     YY_IF = 284,
+     YY_THEN = 285,
+     YY_ELSE = 286,
+     YY_ELSEIF = 287,
+     YY_ENDIF = 288,
+     YY_DO = 289,
+     YY_ENDDO = 290,
+     YY_CONTINUE = 291,
+     YY_BREAK = 292,
+     YY_WHILE = 293,
+     YY_ENDWHILE = 294,
+     YY_WHERE = 295,
+     YY_ENDWHERE = 296,
+     YY_CASE = 297,
+     YY_ENDCASE = 298,
+     YY_PROGRAM = 299,
+     YY_ENDPROGRAM = 300,
+     YY_FUNCTION = 301,
+     YY_ENDFUNCTION = 302,
+     YY_RECURSIVE = 303,
+     YY_RESULT = 304,
+     YY_SUBROUTINE = 305,
+     YY_ENDSUBROUTINE = 306,
+     YY_MODULE = 307,
+     YY_ENDMODULE = 308,
+     YY_BLOCK = 309,
+     YY_ENDBLOCK = 310,
+     YY_IMPLICIT = 311,
+     YY_NONE = 312,
+     YY_USE = 313,
+     YY_PARAMETER = 314,
+     YY_FORMAT = 315,
+     YY_ENTRY = 316,
+     YY_DIMENSION = 317,
+     YY_INTEGER_T = 318,
+     YY_FLOAT_T = 319,
+     YY_STRING_T = 320,
+     YY_COMPLEX_T = 321,
+     YY_BOOL_T = 322,
+     YY_WRITE = 323,
+     YY_READ = 324,
+     YY_PRINT = 325,
+     YY_OPEN = 326,
+     YY_CLOSE = 327
+   };
+#endif
+
+
+#if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
+typedef int YYSTYPE;
+# define YYSTYPE_IS_TRIVIAL 1
+# define yystype YYSTYPE /* obsolescent; will be withdrawn */
+# define YYSTYPE_IS_DECLARED 1
+#endif
+
+extern YYSTYPE yylval;
+
+#ifdef YYPARSE_PARAM
+#if defined __STDC__ || defined __cplusplus
+int yyparse (void *YYPARSE_PARAM);
+#else
+int yyparse ();
+#endif
+#else /* ! YYPARSE_PARAM */
+#if defined __STDC__ || defined __cplusplus
+int yyparse (void);
+#else
+int yyparse ();
+#endif
+#endif /* ! YYPARSE_PARAM */
+
+#endif /* !YY_YY_FOR90_TAB_H_INCLUDED  */
