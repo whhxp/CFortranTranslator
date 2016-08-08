@@ -4,6 +4,7 @@
 #include <iostream>
 #include <boost/shared_ptr.hpp>
 #include "tokenizer.h"
+#include "Variable.h"
 
 int parse(std::string code);
 
@@ -12,7 +13,7 @@ struct ParseNode {
 	struct ParseNode * father;
 	
 	std::vector<ParseNode *> child;
-	FlexState fs;
+	FlexState fs; // 当前归约项目在代码段中的对应位置和作用(终结符/非终结符)
 	struct ParseAttr * attr;
 
 	void addchild(ParseNode * ptrn);
@@ -39,18 +40,20 @@ struct TypeAttr : public ParseAttr {
 	std::string name;
 
 	TypeAttr(ParseNode * parsenode) : ParseAttr(parsenode) {}
-	TypeAttr(const TypeAttr & ta) = default;
+	TypeAttr(const TypeAttr & ta) {
+		clone();
+	}
 	ParseAttr * clone() { return new TypeAttr(*this); }
 
 	void parse();
 };
 struct VariableAttr : public ParseAttr {
-	std::string name;
-	std::string initial; // 初值仍是string
-	struct TypeAttr * typeattr; // observer ptr
+	Variable * variable;
 
-	VariableAttr(ParseNode * parsenode) : ParseAttr(parsenode) {}
-	VariableAttr(const VariableAttr & va) = default;
+	VariableAttr(ParseNode * parsenode, Variable * v) : ParseAttr(parsenode), variable(v){}
+	VariableAttr(const VariableAttr & va) {
+		clone();
+	}
 	ParseAttr * clone() { return new VariableAttr(*this); }
 
 	void parse();
@@ -60,7 +63,9 @@ struct VariableAttr : public ParseAttr {
 extern ParseNode program_tree;
 extern ParseNode * curnode;
 
-void preoder(ParseNode * ptree);
+void preorder(ParseNode * ptree);
+
+
 
 // yacc part code
 // implement in for90.y

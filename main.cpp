@@ -2,6 +2,7 @@
 #include <sstream>  
 #include "parser.h"
 #include <stdio.h>
+#include "cgen.h"
 
 using namespace std;
 
@@ -51,6 +52,7 @@ int main()
 	//global_code = "program 1.3 + 2 * 3 - .true. end program";
 	global_code = "program 1.3 + 2 * 3 - .true. end program";
 	global_code = "program if 1 then 2 else if 3 then 4 end if end program";
+	//global_code = "program 1 * (2 - 3) end program";
 	//global_code = "program if end else";
 	//global_code = "~~~~~";
 
@@ -60,7 +62,8 @@ int main()
 	while (fscanf(stderr, "%s", errlog) != EOF) {
 		printf("%s\n", errlog);
 	}
-	preoder(&program_tree);
+	preorder(&program_tree);
+	cout << endl << gen_code(&program_tree) << endl;
 	system("pause");
 	return 0;
 }

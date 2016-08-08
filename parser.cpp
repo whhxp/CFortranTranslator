@@ -56,7 +56,7 @@ void ParseNode::addchild(ParseNode * ptrn) {
 ParseNode program_tree;
 ParseNode * curnode;
 
-void preoder(ParseNode * ptree) {
+void preorder(ParseNode * ptree) {
 	using namespace std;
 	ParseNode * p = nullptr;
 	stack< pair< ParseNode * , int> > s;
