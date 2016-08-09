@@ -219,6 +219,7 @@
 		CommentLine = -1010,// //
 		Include = -1011,
 
+		NT_PARAMTABLE = -2001,
 	};
 //}
 

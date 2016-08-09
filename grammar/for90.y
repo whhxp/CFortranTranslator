@@ -48,7 +48,7 @@ ParseNode * flattern(ParseNode *); // eliminate right recursion
 	crlf : YY_CRLF
 		| 
 
-    dummy_function : YY_RECURSIVE
+    dummy_function_iden : YY_RECURSIVE
 	
 	literal : YY_FLOAT
 			{
@@ -202,11 +202,67 @@ ParseNode * flattern(ParseNode *); // eliminate right recursion
 
     output_stmt : write
 
-    write : '(' YY_INTEGER ',' YY_STRING ')' argtable
-        | '(' '*' ',' YY_STRING ')' argtable
-        | '(' '*' ',' '*' ')' argtable
-        | '*' ',' argtable
+	_optional_lbrace : 
+		| '('
+			{
+				printf("abc\n");
+			}
+	_optional_rbrace : 
+		| ')'
 
+    write : YY_WRITE _optional_lbrace YY_INTEGER ',' YY_STRING _optional_rbrace argtable
+			{
+				ParseNode * newnode = new ParseNode();
+				sprintf(codegen_buf, "printf(\"%s\", %s) ;\n", $4.fs.CurrentTerm.what.c_str(), $6.fs.CurrentTerm.what.c_str());
+				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
+				newnode->addchild(new ParseNode($3)); // device id
+				newnode->addchild(new ParseNode($5)); // formatter
+				newnode->addchild(new ParseNode($7)); // paramtable
+				$$ = *newnode;
+			}
+		| YY_WRITE _optional_lbrace '*' ',' '*' _optional_rbrace argtable
+			{
+				ParseNode * newnode = new ParseNode();
+				sprintf(codegen_buf, "printf(\"%%g\", %s) ;\n", $3.fs.CurrentTerm.what.c_str());
+				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
+				ParseNode * deviceidnode = new ParseNode();
+				deviceidnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, "" };
+				newnode->addchild(deviceidnode); // device id
+				ParseNode * formatternode = new ParseNode();
+				formatternode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, "%g" };
+				newnode->addchild(formatternode); // formatter
+
+				newnode->addchild(new ParseNode($7)); // paramtable
+				$$ = *newnode;
+			}
+        | YY_WRITE _optional_lbrace '*' ',' YY_STRING _optional_rbrace argtable
+			{
+				ParseNode * newnode = new ParseNode();
+				sprintf(codegen_buf, "printf(\"%s\", %s) ;\n", $3.fs.CurrentTerm.what.c_str());
+				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
+					ParseNode * deviceidnode = new ParseNode();
+					deviceidnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, "" };
+					newnode->addchild(deviceidnode); // device id
+				newnode->addchild(new ParseNode($5)); // formatter
+				newnode->addchild(new ParseNode($7)); // paramtable
+				$$ = *newnode;
+			}
+			
+        | YY_WRITE '*' ',' argtable
+			{
+				ParseNode * newnode = new ParseNode();
+				sprintf(codegen_buf, "printf(\"%g\", %s) ;\n", $3.fs.CurrentTerm.what.c_str());
+				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
+					ParseNode * deviceidnode = new ParseNode();
+					deviceidnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, "" };
+					newnode->addchild(deviceidnode); // device id
+					ParseNode * formatternode = new ParseNode();
+					formatternode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, "%g" };
+					newnode->addchild(formatternode); // formatter
+
+				newnode->addchild(new ParseNode($4)); // paramtable
+				$$ = *newnode;
+			}
     type_spec : YY_INTEGER_T
 			{
 				$1.fs.CurrentTerm.what = typename_map.at($1.fs.CurrentTerm.what);
@@ -285,14 +341,18 @@ ParseNode * flattern(ParseNode *); // eliminate right recursion
 				ParseNode * pn = new ParseNode($6); //paramtable
 				newnode->addchild(pn); // paramtable
 
-					for (int i = 0; i < pn->child.size() ; i++)
+				while (pn->child.size() == 2 && pn->child[1]->fs.CurrentTerm.token == TokenMeta::NT_PARAMTABLE) {
+					// for all non-flatterned paramtable
+					for (int i = 0; i < pn->child.size(); i++)
 					{
 						// for each variable in flatterned paramtable
-						sprintf(codegen_buf, "forarr<%s> %s = forarr(%s, %s);", $1.fs.CurrentTerm.what.c_str(),  pn->child[i]->child[0]->fs.CurrentTerm.what.c_str(),  $4.child[0]->fs.CurrentTerm.what.c_str(),  $4.child[1]->fs.CurrentTerm.what.c_str() );
+						sprintf(codegen_buf, "forarr<%s> %s(%s, %s);", $1.fs.CurrentTerm.what.c_str(), pn->child[i]->child[0]->fs.CurrentTerm.what.c_str(), $4.child[0]->fs.CurrentTerm.what.c_str(), $4.child[1]->fs.CurrentTerm.what.c_str());
 						arr_decl += codegen_buf;
 						arr_decl += '\n';
 					}
-				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, arr_decl };
+					pn = pn->child[1];
+				}
+				newnode->fs.CurrentTerm = Term{ TokenMeta::NT_PARAMTABLE, arr_decl };
 				$$ = *newnode;
 			}
 
@@ -302,7 +362,7 @@ ParseNode * flattern(ParseNode *); // eliminate right recursion
 				/* this paramtable has only one value */
 				ParseNode * newnode = new ParseNode();
 				sprintf(codegen_buf, "%s", $1.fs.CurrentTerm.what.c_str());
-				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
+				newnode->fs.CurrentTerm = Term{ TokenMeta::NT_PARAMTABLE, string(codegen_buf) };
 					ParseNode * variablenode = new ParseNode();
 					sprintf(codegen_buf, "%s", $1.fs.CurrentTerm.what.c_str());
 					variablenode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
@@ -317,13 +377,13 @@ ParseNode * flattern(ParseNode *); // eliminate right recursion
 				/* initial value is required in parse tree because it can be an non-terminal `exp` */
 				ParseNode * newnode = new ParseNode();
 				sprintf(codegen_buf, "%s = %s", $1.fs.CurrentTerm.what.c_str(), $3.fs.CurrentTerm.what.c_str());
-				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
+				newnode->fs.CurrentTerm = Term{ TokenMeta::NT_PARAMTABLE, string(codegen_buf) };
 					ParseNode * variablenode = new ParseNode();
 					sprintf(codegen_buf, "%s = %s", $1.fs.CurrentTerm.what.c_str(), $3.fs.CurrentTerm.what.c_str());
 					variablenode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
 					variablenode->addchild(new ParseNode($1)); // type
 					variablenode->addchild(new ParseNode($3)); // initial
-				newnode->addchild(variablenode);
+					newnode->addchild(variablenode);
 				newnode = flattern(newnode);
 				$$ = *newnode;
 			}
@@ -331,14 +391,14 @@ ParseNode * flattern(ParseNode *); // eliminate right recursion
 			{
 				ParseNode * newnode = new ParseNode();
 				sprintf(codegen_buf, "%s, %s", $1.fs.CurrentTerm.what.c_str(), $3.fs.CurrentTerm.what.c_str());
-				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
+				newnode->fs.CurrentTerm = Term{ TokenMeta::NT_PARAMTABLE, string(codegen_buf) };
 					ParseNode * variablenode = new ParseNode();
 					sprintf(codegen_buf, "%s", $1.fs.CurrentTerm.what.c_str());
 					variablenode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
 					variablenode->addchild(new ParseNode($1)); // type
 					FlexState fs; fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string("void") };
 					variablenode->addchild(new ParseNode(fs, newnode)); // dummy initial
-				newnode->addchild(variablenode);
+					newnode->addchild(variablenode);
 				newnode->addchild(new ParseNode($3)); // paramtable
 				newnode = flattern(newnode);
 				$$ = *newnode;
@@ -347,13 +407,13 @@ ParseNode * flattern(ParseNode *); // eliminate right recursion
 			{
 				ParseNode * newnode = new ParseNode();
 				sprintf(codegen_buf, "%s = %s, %s", $1.fs.CurrentTerm.what.c_str(), $3.fs.CurrentTerm.what.c_str(), $5.fs.CurrentTerm.what.c_str());
-				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
+				newnode->fs.CurrentTerm = Term{ TokenMeta::NT_PARAMTABLE, string(codegen_buf) };
 					ParseNode * variablenode = new ParseNode();
 					sprintf(codegen_buf, "%s", $1.fs.CurrentTerm.what.c_str());
 					variablenode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
 					variablenode->addchild(new ParseNode($1)); // type
 					variablenode->addchild(new ParseNode($3)); // initial
-				newnode->addchild(variablenode);
+					newnode->addchild(variablenode);
 				newnode->addchild(new ParseNode($5)); // paramtable
 				newnode = flattern(newnode);
 				$$ = *newnode;
@@ -471,6 +531,11 @@ ParseNode * flattern(ParseNode *); // eliminate right recursion
 
     suite : stmt
         | stmt suite
+
+	function_decl : dummy_function_iden YY_FUNCTION YY_WORD '(' paramtable ')' YY_RESULT '(' YY_WORD '(' crlf suite YY_END YY_FUNCTION
+			{
+				
+			}
 
     program : YY_PROGRAM YY_WORD suite YY_END YY_PROGRAM YY_WORD
 			{ 
