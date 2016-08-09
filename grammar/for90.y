@@ -202,67 +202,52 @@ ParseNode * flattern(ParseNode *); // eliminate right recursion
 
     output_stmt : write
 
+	compound_stmt : if_stmt | do_stmt
+
+	suite : stmt
+		| stmt suite
+
 	_optional_lbrace : 
 		| '('
-			{
-				printf("abc\n");
-			}
 	_optional_rbrace : 
 		| ')'
+	_optional_device : '*'
+			{
+				$$.fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, "" };
+			}
+		| YY_INTEGER
+			{
+				$$.fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, $1.fs.CurrentTerm.what };
+			}
+	_optional_formatter : '*'
+			{
+				$$.fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, "%g" };
+			}
+		| YY_STRING
+			{
+				$$.fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, $1.fs.CurrentTerm.what };
+			}
 
-    write : YY_WRITE _optional_lbrace YY_INTEGER ',' YY_STRING _optional_rbrace argtable
+	io_info : _optional_device ',' _optional_formatter
 			{
 				ParseNode * newnode = new ParseNode();
-				sprintf(codegen_buf, "printf(\"%s\", %s) ;\n", $4.fs.CurrentTerm.what.c_str(), $6.fs.CurrentTerm.what.c_str());
-				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
-				newnode->addchild(new ParseNode($3)); // device id
-				newnode->addchild(new ParseNode($5)); // formatter
-				newnode->addchild(new ParseNode($7)); // paramtable
+				/* target code of io_info depend on context */
+				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, "" };
+				newnode->addchild(new ParseNode($1)); // formatter
+				newnode->addchild(new ParseNode($3)); // paramtable
 				$$ = *newnode;
 			}
-		| YY_WRITE _optional_lbrace '*' ',' '*' _optional_rbrace argtable
-			{
-				ParseNode * newnode = new ParseNode();
-				sprintf(codegen_buf, "printf(\"%%g\", %s) ;\n", $3.fs.CurrentTerm.what.c_str());
-				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
-				ParseNode * deviceidnode = new ParseNode();
-				deviceidnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, "" };
-				newnode->addchild(deviceidnode); // device id
-				ParseNode * formatternode = new ParseNode();
-				formatternode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, "%g" };
-				newnode->addchild(formatternode); // formatter
 
-				newnode->addchild(new ParseNode($7)); // paramtable
-				$$ = *newnode;
-			}
-        | YY_WRITE _optional_lbrace '*' ',' YY_STRING _optional_rbrace argtable
+    write : YY_WRITE _optional_lbrace io_info _optional_rbrace argtable
 			{
 				ParseNode * newnode = new ParseNode();
-				sprintf(codegen_buf, "printf(\"%s\", %s) ;\n", $3.fs.CurrentTerm.what.c_str());
+				sprintf(codegen_buf, "printf(\"%s\", %s) ;\n", $3.child[1]->fs.CurrentTerm.what.c_str(), $5.fs.CurrentTerm.what.c_str());
 				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
-					ParseNode * deviceidnode = new ParseNode();
-					deviceidnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, "" };
-					newnode->addchild(deviceidnode); // device id
-				newnode->addchild(new ParseNode($5)); // formatter
-				newnode->addchild(new ParseNode($7)); // paramtable
+				newnode->addchild(new ParseNode($3)); // ioinfo
+				newnode->addchild(new ParseNode($5)); // argtable
 				$$ = *newnode;
 			}
-			
-        | YY_WRITE '*' ',' argtable
-			{
-				ParseNode * newnode = new ParseNode();
-				sprintf(codegen_buf, "printf(\"%g\", %s) ;\n", $3.fs.CurrentTerm.what.c_str());
-				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
-					ParseNode * deviceidnode = new ParseNode();
-					deviceidnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, "" };
-					newnode->addchild(deviceidnode); // device id
-					ParseNode * formatternode = new ParseNode();
-					formatternode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, "%g" };
-					newnode->addchild(formatternode); // formatter
 
-				newnode->addchild(new ParseNode($4)); // paramtable
-				$$ = *newnode;
-			}
     type_spec : YY_INTEGER_T
 			{
 				$1.fs.CurrentTerm.what = typename_map.at($1.fs.CurrentTerm.what);
@@ -422,10 +407,20 @@ ParseNode * flattern(ParseNode *); // eliminate right recursion
     argtable : exp
 			{
 				/* argtable is used in function call */
+				ParseNode * newnode = new ParseNode();
+				sprintf(codegen_buf, "%s", $1.fs.CurrentTerm.what.c_str());
+				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
+				$$ = *newnode;
 			}
         | exp ',' argtable
-
-    compound_stmt : if_stmt | do_stmt
+			{
+				ParseNode * newnode = new ParseNode();
+				sprintf(codegen_buf, "%s, %s", $1.fs.CurrentTerm.what.c_str(), $3.fs.CurrentTerm.what.c_str());
+				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
+				newnode->addchild(new ParseNode($3)); // paramtable
+				newnode = flattern(newnode);
+				$$ = *newnode;
+			}
 
 	if_stmt : YY_IF exp YY_THEN crlf suite YY_END YY_IF crlf
 			{
@@ -528,9 +523,6 @@ ParseNode * flattern(ParseNode *); // eliminate right recursion
 				newnode->addchild(new ParseNode($9)); // suite
 				$$ = *newnode;
 			}
-
-    suite : stmt
-        | stmt suite
 
 	function_decl : dummy_function_iden YY_FUNCTION YY_WORD '(' paramtable ')' YY_RESULT '(' YY_WORD '(' crlf suite YY_END YY_FUNCTION
 			{
