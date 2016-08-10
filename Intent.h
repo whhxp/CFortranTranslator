@@ -101,7 +101,7 @@
 		PushExtern = -123, // 在闭包函数中 StaticBind 变量
 		SystemFunction = -124, // 调用系统内置函数
 		DynamicVariable = -125, //Heap中的指针
-		UnknownVariant = -125, //尚未定位符号表的变量
+		UnknownVariant = -126, //尚未定位符号表的变量
 
 		New = -131,
 		Delete = -132,
@@ -220,6 +220,9 @@
 		Include = -1011,
 
 		NT_PARAMTABLE = -2001,
+		NT_FORMATTER = -2002,
+		NT_AUTOFORMATTER = -2003, 
+		NT_ARGTABLE = -2004,
 	};
 //}
 

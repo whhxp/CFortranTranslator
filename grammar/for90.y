@@ -3,6 +3,7 @@
 #include <string>
 #include <sstream>
 #include <iostream>
+#include <stdarg.h>
 #include "../tokenizer.h"
 #include "../parser.h"
 #include "../cgen.h"
@@ -17,7 +18,7 @@ extern void release_buff();
 char codegen_buf[65535];
 using namespace std;
 string tabber(string &);
-ParseNode * flattern(ParseNode *); // eliminate right recursion
+ParseNode * flattern_bin(ParseNode *); // eliminate right recursion of an binary tree
 %}
 
 %debug
@@ -221,11 +222,11 @@ ParseNode * flattern(ParseNode *); // eliminate right recursion
 			}
 	_optional_formatter : '*'
 			{
-				$$.fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, "%g" };
+				$$.fs.CurrentTerm = Term{ TokenMeta::NT_AUTOFORMATTER, "" };
 			}
 		| YY_STRING
 			{
-				$$.fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, $1.fs.CurrentTerm.what };
+				$$.fs.CurrentTerm = Term{ TokenMeta::NT_FORMATTER, $1.fs.CurrentTerm.what };
 			}
 
 	io_info : _optional_device ',' _optional_formatter
@@ -234,17 +235,39 @@ ParseNode * flattern(ParseNode *); // eliminate right recursion
 				/* target code of io_info depend on context */
 				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, "" };
 				newnode->addchild(new ParseNode($1)); // formatter
-				newnode->addchild(new ParseNode($3)); // paramtable
+				newnode->addchild(new ParseNode($3)); // argtable
 				$$ = *newnode;
 			}
 
     write : YY_WRITE _optional_lbrace io_info _optional_rbrace argtable
 			{
 				ParseNode * newnode = new ParseNode();
-				sprintf(codegen_buf, "printf(\"%s\", %s) ;\n", $3.child[1]->fs.CurrentTerm.what.c_str(), $5.fs.CurrentTerm.what.c_str());
-				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
 				newnode->addchild(new ParseNode($3)); // ioinfo
 				newnode->addchild(new ParseNode($5)); // argtable
+				ParseNode * argtbl = &$5;
+				ParseNode * formatter = $3.child[1];
+				if (formatter->fs.CurrentTerm.token == TokenMeta::NT_FORMATTER) {
+					sprintf(codegen_buf, "printf(\"%s\", %s) ;\n", $3.child[1]->fs.CurrentTerm.what.c_str(), $5.fs.CurrentTerm.what.c_str());
+					newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
+				}
+				else {
+					/* NT_AUTOFORMATTER */
+					string coutcode = "cout";
+					/* enumerate argtable */
+					// TODO the while loop is wrong
+					//while (argtbl->child.size() == 2 && argtbl->child[1]->fs.CurrentTerm.token == TokenMeta::NT_ARGTABLE) {
+						// for all non-flatterned argtable
+						for (int i = 0; i < argtbl->child.size(); i++)
+						{
+							// for each variable in flatterned argtable
+							coutcode += "<<";
+							coutcode += argtbl->child[i]->fs.CurrentTerm.what;
+						}
+						// argtbl = argtbl->child[1];
+					//}
+					coutcode += ";";
+					newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, coutcode };
+				}
 				$$ = *newnode;
 			}
 
@@ -326,6 +349,7 @@ ParseNode * flattern(ParseNode *); // eliminate right recursion
 				ParseNode * pn = new ParseNode($6); //paramtable
 				newnode->addchild(pn); // paramtable
 
+				/* enumerate paramtable */
 				while (pn->child.size() == 2 && pn->child[1]->fs.CurrentTerm.token == TokenMeta::NT_PARAMTABLE) {
 					// for all non-flatterned paramtable
 					for (int i = 0; i < pn->child.size(); i++)
@@ -369,7 +393,7 @@ ParseNode * flattern(ParseNode *); // eliminate right recursion
 					variablenode->addchild(new ParseNode($1)); // type
 					variablenode->addchild(new ParseNode($3)); // initial
 					newnode->addchild(variablenode);
-				newnode = flattern(newnode);
+				newnode = flattern_bin(newnode);
 				$$ = *newnode;
 			}
         | variable ',' paramtable
@@ -385,7 +409,7 @@ ParseNode * flattern(ParseNode *); // eliminate right recursion
 					variablenode->addchild(new ParseNode(fs, newnode)); // dummy initial
 					newnode->addchild(variablenode);
 				newnode->addchild(new ParseNode($3)); // paramtable
-				newnode = flattern(newnode);
+				newnode = flattern_bin(newnode);
 				$$ = *newnode;
 			}
         | variable '=' exp ',' paramtable
@@ -400,7 +424,7 @@ ParseNode * flattern(ParseNode *); // eliminate right recursion
 					variablenode->addchild(new ParseNode($3)); // initial
 					newnode->addchild(variablenode);
 				newnode->addchild(new ParseNode($5)); // paramtable
-				newnode = flattern(newnode);
+				newnode = flattern_bin(newnode);
 				$$ = *newnode;
 			}
 
@@ -409,16 +433,18 @@ ParseNode * flattern(ParseNode *); // eliminate right recursion
 				/* argtable is used in function call */
 				ParseNode * newnode = new ParseNode();
 				sprintf(codegen_buf, "%s", $1.fs.CurrentTerm.what.c_str());
-				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
+				newnode->fs.CurrentTerm = Term{ TokenMeta::NT_ARGTABLE, string(codegen_buf) };
+				newnode->addchild(new ParseNode($1)); // exp
 				$$ = *newnode;
 			}
         | exp ',' argtable
 			{
 				ParseNode * newnode = new ParseNode();
 				sprintf(codegen_buf, "%s, %s", $1.fs.CurrentTerm.what.c_str(), $3.fs.CurrentTerm.what.c_str());
-				newnode->fs.CurrentTerm = Term{ TokenMeta::META_NONTERMINAL, string(codegen_buf) };
-				newnode->addchild(new ParseNode($3)); // paramtable
-				newnode = flattern(newnode);
+				newnode->fs.CurrentTerm = Term{ TokenMeta::NT_ARGTABLE, string(codegen_buf) };
+				newnode->addchild(new ParseNode($1)); // exp
+				newnode->addchild(new ParseNode($3)); // argtable
+				newnode = flattern_bin(newnode);
 				$$ = *newnode;
 			}
 
@@ -526,19 +552,19 @@ ParseNode * flattern(ParseNode *); // eliminate right recursion
 
 	function_decl : dummy_function_iden YY_FUNCTION YY_WORD '(' paramtable ')' YY_RESULT '(' YY_WORD '(' crlf suite YY_END YY_FUNCTION
 			{
-				
+
 			}
 
-    program : YY_PROGRAM YY_WORD suite YY_END YY_PROGRAM YY_WORD
+    program : YY_PROGRAM YY_WORD crlf suite YY_END YY_PROGRAM YY_WORD crlf
 			{ 
 				ParseNode * newnode = new ParseNode();
-				newnode->addchild(new ParseNode($3));
+				newnode->addchild(new ParseNode($4)); //suite
 				program_tree = *newnode;
 			}
-        | YY_PROGRAM suite YY_END YY_PROGRAM
+        | YY_PROGRAM crlf suite YY_END YY_PROGRAM crlf
 			{
 				ParseNode * newnode = new ParseNode();
-				newnode->addchild(new ParseNode($2));
+				newnode->addchild(new ParseNode($3)); //suite
 				program_tree = *newnode;
 			}
 
@@ -560,11 +586,17 @@ string tabber(string & src) {
 	}
 	return ans;
 }
-ParseNode * flattern(ParseNode * pn) {
+ParseNode * flattern_bin(ParseNode * pn) {
 	/* it cant work well because it create a whole noew tree copy too much */
+	/* THIS ALGORITHM FLATTERNS A RIGHT-RECURSIVE BINARY TREE */
 	if (pn->child.size() == 2) {
 		ParseNode * newp = new ParseNode();
+		/* child[0] is the only data node */
 		newp->addchild(new ParseNode(*pn->child[0]));
+		/* pn->child[1] is a list of ALREADY flatterned elements */
+		//	e.g
+		//	child[0] is 1 
+		//	child[1] is [2, 3, 4, 5]
 		for (int i = 0; i < pn->child[1]->child.size(); i++)
 		{
 			newp->addchild(new ParseNode(*pn->child[1]->child[i]));
