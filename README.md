@@ -27,6 +27,9 @@ refer to for90.y for all accepted grammar
 ### variables
 1. all variables must be **explicitly** declared
 
+### functions and subroutines
+1. 
+
 ### IO
 |for90|c++|
 |:-:|:-:|

@@ -153,7 +153,7 @@
 		META_ILLEGAL = -307,
 		META_ANY = -308, // 尚未解析的Intent
 		META_REQ_MORE = -309, // 词法分析器需要更多信息(Look Ahead)
-		META_NONTERMINAL = -310, // 非终结符
+		META_NONTERMINAL = -310, // 非终结符, 由NT_细化
 
 		// 标注变量类型(变量表)
 		Void = -320,
@@ -223,6 +223,8 @@
 		NT_FORMATTER = -2002,
 		NT_AUTOFORMATTER = -2003, 
 		NT_ARGTABLE = -2004,
+		NT_FUNCTIONDECLARE = -2004,
+		NT_VARIABLEDEFINE = -2004,
 	};
 //}
 

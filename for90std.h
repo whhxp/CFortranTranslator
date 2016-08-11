@@ -15,5 +15,11 @@ protected:
 };
 
 struct forcomplex {
+	
+	forcomplex operator+(const forcomplex & rhs);
 
+	forcomplex(double real, double imagine) : m_real(real), m_imagine(imagine) {}
+protected:
+	double m_real;
+	double m_imagine;
 };
