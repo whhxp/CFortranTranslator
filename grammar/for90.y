@@ -174,6 +174,16 @@ ParseNode * flattern_bin(ParseNode *); // eliminate right recursion of an binary
 				newnode->addchild(new ParseNode($3)); // right operand exp
 				$$ = *newnode;
 			}
+		| variable '(' argtable ')'
+			{
+				/* function call OR array index */
+				ParseNode * newnode = new ParseNode();
+				sprintf(codegen_buf, "%s(%s)", $1.fs.CurrentTerm.what.c_str(), $3.fs.CurrentTerm.what.c_str());
+				newnode->fs.CurrentTerm = Term{ TokenMeta::NT_FUCNTIONARGTABLE, string(codegen_buf) };
+				newnode->addchild(new ParseNode($1)); // function/array name
+				newnode->addchild(new ParseNode($3)); // argtable
+				$$ = *newnode;
+			}
 		| literal crlf
             { 
 				// 
@@ -669,7 +679,7 @@ ParseNode * flattern_bin(ParseNode *); // eliminate right recursion of an binary
 				for (int i = 0; i < param_name_typename.size() - 1 /* exclude YY_RESULT(return value) */; i++)
 				{
 					if(i != 0)
-						argtblstr += ",";
+						argtblstr += ", ";
 					argtblstr += param_name_typename[i].second;
 					argtblstr += " ";
 					argtblstr += param_name_typename[i].first;
