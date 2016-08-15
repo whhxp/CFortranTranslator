@@ -15,9 +15,10 @@ extern void set_buff(const std::string & code);
 extern void release_buff();
 #define YYDEBUG 1
 #define YYERROR_VERBOSE
-char codegen_buf[65535];
+#define MAX_CODE_LENGTH 65535
+char codegen_buf[MAX_CODE_LENGTH];
 using namespace std;
-string tabber(string &);
+string tabber(string &); // add tab(`\t`) into the front of each line
 ParseNode * flattern_bin(ParseNode *); // eliminate right recursion of an binary tree
 %}
 
@@ -805,6 +806,29 @@ ParseNode * flattern_bin(ParseNode * pn) {
 		return pn;
 	}
 }
+void update_pos(YYSTYPE & current_node) {
+	if (current_node.child.size() == 0) {
+		/* do nothing */
+	}
+	else if (current_node.child.size() == 1) {
+		current_node.fs.parse_pos = current_node.child[0]->fs.parse_pos;
+		current_node.fs.parse_line = current_node.child[0]->fs.parse_line;
+		current_node.fs.parse_len = current_node.child[0]->fs.parse_len;
+		current_node.fs.line_pos = current_node.child[0]->fs.line_pos;
+	}
+	else {
+		int tot_len = 0;
+		for (int i = 0; i < current_node.child.size(); i++)
+		{
+			tot_len += current_node.child[i]->fs.parse_len;
+		}
+		current_node.fs.parse_pos = current_node.child[0]->fs.parse_pos;
+		current_node.fs.parse_line = current_node.child[0]->fs.parse_line;
+		current_node.fs.parse_len = tot_len;
+		current_node.fs.parse_len = current_node.child[0]->fs.line_pos;
+	}
+}
+
 int parse(std::string code) {
 #ifdef USE_YACC
 	set_buff(code);
