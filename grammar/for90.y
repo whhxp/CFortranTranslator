@@ -18,8 +18,6 @@ extern void release_buff();
 #define MAX_CODE_LENGTH 65535
 char codegen_buf[MAX_CODE_LENGTH];
 using namespace std;
-string tabber(string &); // add tab(`\t`) into the front of each line
-ParseNode * flattern_bin(ParseNode *); // eliminate right recursion of an binary tree
 %}
 
 %debug
@@ -115,8 +113,10 @@ ParseNode * flattern_bin(ParseNode *); // eliminate right recursion of an binary
 			{
 				/* function call OR array index */
 				ParseNode * newnode = new ParseNode();
-				sprintf(codegen_buf, "%s(%s)", $1.fs.CurrentTerm.what.c_str(), $3.fs.CurrentTerm.what.c_str());
-				newnode->fs.CurrentTerm = Term{ TokenMeta::NT_FUCNTIONARRAY, string(codegen_buf) };
+#ifndef LAZY_GEN
+			sprintf(codegen_buf, "%s(%s)", $1.fs.CurrentTerm.what.c_str(), $3.fs.CurrentTerm.what.c_str());
+			newnode->fs.CurrentTerm = Term{ TokenMeta::NT_FUCNTIONARRAY, string(codegen_buf) };
+#endif // !LAZY_GEN
 				newnode->addchild(new ParseNode($1)); // function/array name
 				newnode->addchild(new ParseNode($3)); // argtable
 				$$ = *newnode;
@@ -127,7 +127,10 @@ ParseNode * flattern_bin(ParseNode *); // eliminate right recursion of an binary
 			{
 				/* function call OR array index */
 				ParseNode * newnode = new ParseNode();
-				newnode->fs.CurrentTerm = Term{ TokenMeta::NT_EXPRESSION, $1.fs.CurrentTerm.what };
+#ifndef LAZY_GEN
+			newnode->fs.CurrentTerm = Term{ TokenMeta::NT_EXPRESSION, $1.fs.CurrentTerm.what };
+#endif // !LAZY_GEN
+
 				newnode->addchild(new ParseNode($1)); // function_array
 				$$ = *newnode;
 				update_pos($$);
@@ -136,8 +139,11 @@ ParseNode * flattern_bin(ParseNode *); // eliminate right recursion of an binary
 			{
 				/* `callable '(' argtable ')'` rule has priority over this rule  */
 				ParseNode * newnode = new ParseNode();
-				sprintf(codegen_buf, "( %s )", $2.fs.CurrentTerm.what.c_str());
-				newnode->fs.CurrentTerm = Term{ TokenMeta::NT_EXPRESSION, string(codegen_buf) };
+#ifndef LAZY_GEN
+			sprintf(codegen_buf, "( %s )", $2.fs.CurrentTerm.what.c_str());
+			newnode->fs.CurrentTerm = Term{ TokenMeta::NT_EXPRESSION, string(codegen_buf) };
+#endif // !LAZY_GEN
+
 				newnode->addchild(new ParseNode($2)); 
 				$$ = *newnode;
 				update_pos($$);
@@ -571,7 +577,13 @@ ParseNode * flattern_bin(ParseNode *); // eliminate right recursion of an binary
 				$$ = *newnode;
 				update_pos($$);
 			}
-
+	array_builder : '(' '/' argtable '/' ')'
+			{
+			}
+		| '(' '/' '(' exp ')' ',' variable '=' exp ',' exp '/' ')'
+			{
+			}
+		| '(' '/' variable '(' slice ')' '/' ')'
 
 	if_stmt : YY_IF exp YY_THEN crlf suite YY_END YY_IF crlf
 			{

@@ -562,8 +562,8 @@ static const yytype_uint16 yyrline[] =
      258,   267,   268,   269,   270,   272,   274,   274,   276,   288,
      297,   306,   318,   322,   323,   324,   325,   326,   331,   336,
      341,   347,   358,   395,   401,   407,   413,   419,   449,   461,
-     472,   500,   517,   533,   550,   567,   576,   588,   602,   615,
-     629,   642,   655,   666,   680,   696,   837,   842,   848,   854
+     472,   500,   517,   533,   550,   567,   582,   594,   608,   621,
+     635,   648,   661,   672,   686,   702,   843,   848,   854,   860
 };
 #endif
 
@@ -2327,7 +2327,7 @@ yyreduce:
 
   case 66:
 /* Line 1792 of yacc.c  */
-#line 577 "for90.y"
+#line 583 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
 				(yyvsp[(5) - (8)]).fs.CurrentTerm.what = tabber((yyvsp[(5) - (8)]).fs.CurrentTerm.what);
@@ -2343,7 +2343,7 @@ yyreduce:
 
   case 67:
 /* Line 1792 of yacc.c  */
-#line 589 "for90.y"
+#line 595 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
 				(yyvsp[(5) - (11)]).fs.CurrentTerm.what = tabber((yyvsp[(5) - (11)]).fs.CurrentTerm.what); (yyvsp[(8) - (11)]).fs.CurrentTerm.what = tabber((yyvsp[(8) - (11)]).fs.CurrentTerm.what);
@@ -2361,7 +2361,7 @@ yyreduce:
 
   case 68:
 /* Line 1792 of yacc.c  */
-#line 603 "for90.y"
+#line 609 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
 				(yyvsp[(5) - (9)]).fs.CurrentTerm.what = tabber((yyvsp[(5) - (9)]).fs.CurrentTerm.what); (yyvsp[(6) - (9)]).fs.CurrentTerm.what = tabber((yyvsp[(6) - (9)]).fs.CurrentTerm.what);
@@ -2378,7 +2378,7 @@ yyreduce:
 
   case 69:
 /* Line 1792 of yacc.c  */
-#line 616 "for90.y"
+#line 622 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
 				(yyvsp[(3) - (11)]).fs.CurrentTerm.what = tabber((yyvsp[(3) - (11)]).fs.CurrentTerm.what); (yyvsp[(6) - (11)]).fs.CurrentTerm.what = tabber((yyvsp[(6) - (11)]).fs.CurrentTerm.what);
@@ -2396,7 +2396,7 @@ yyreduce:
 
   case 70:
 /* Line 1792 of yacc.c  */
-#line 630 "for90.y"
+#line 636 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
 				(yyvsp[(5) - (5)]).fs.CurrentTerm.what = tabber((yyvsp[(5) - (5)]).fs.CurrentTerm.what);
@@ -2412,7 +2412,7 @@ yyreduce:
 
   case 71:
 /* Line 1792 of yacc.c  */
-#line 643 "for90.y"
+#line 649 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
 				(yyvsp[(5) - (6)]).fs.CurrentTerm.what = tabber((yyvsp[(5) - (6)]).fs.CurrentTerm.what);
@@ -2429,7 +2429,7 @@ yyreduce:
 
   case 72:
 /* Line 1792 of yacc.c  */
-#line 656 "for90.y"
+#line 662 "for90.y"
     {
 				ParseNode * newnode = new ParseNode(); 
 				(yyvsp[(3) - (6)]).fs.CurrentTerm.what = tabber((yyvsp[(3) - (6)]).fs.CurrentTerm.what);
@@ -2444,7 +2444,7 @@ yyreduce:
 
   case 73:
 /* Line 1792 of yacc.c  */
-#line 667 "for90.y"
+#line 673 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
 				(yyvsp[(8) - (10)]).fs.CurrentTerm.what = tabber((yyvsp[(8) - (10)]).fs.CurrentTerm.what); 
@@ -2462,7 +2462,7 @@ yyreduce:
 
   case 74:
 /* Line 1792 of yacc.c  */
-#line 681 "for90.y"
+#line 687 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
 				(yyvsp[(9) - (12)]).fs.CurrentTerm.what = tabber((yyvsp[(9) - (12)]).fs.CurrentTerm.what);
@@ -2481,7 +2481,7 @@ yyreduce:
 
   case 75:
 /* Line 1792 of yacc.c  */
-#line 697 "for90.y"
+#line 703 "for90.y"
     {
 				/* fortran90 does not declare type of arguments in function declaration statement*/
 				ParseNode * newnode = new ParseNode();
@@ -2625,7 +2625,7 @@ yyreduce:
 
   case 76:
 /* Line 1792 of yacc.c  */
-#line 838 "for90.y"
+#line 844 "for90.y"
     {
 				(yyval) = (yyvsp[(1) - (1)]);
 				update_pos((yyval));
@@ -2634,7 +2634,7 @@ yyreduce:
 
   case 77:
 /* Line 1792 of yacc.c  */
-#line 843 "for90.y"
+#line 849 "for90.y"
     {
 				(yyval) = (yyvsp[(1) - (1)]);
 				update_pos((yyval));
@@ -2643,7 +2643,7 @@ yyreduce:
 
   case 78:
 /* Line 1792 of yacc.c  */
-#line 849 "for90.y"
+#line 855 "for90.y"
     { 
 				ParseNode * newnode = new ParseNode();
 				newnode->addchild(new ParseNode((yyvsp[(4) - (8)]))); //wrapper
@@ -2653,7 +2653,7 @@ yyreduce:
 
   case 79:
 /* Line 1792 of yacc.c  */
-#line 855 "for90.y"
+#line 861 "for90.y"
     {
 				ParseNode * newnode = new ParseNode();
 				newnode->addchild(new ParseNode((yyvsp[(3) - (6)]))); //wrapper
@@ -2895,7 +2895,7 @@ yyreturn:
 
 
 /* Line 2055 of yacc.c  */
-#line 861 "for90.y"
+#line 867 "for90.y"
 
 //extern "C" int yylex();
 
