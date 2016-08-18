@@ -87,7 +87,13 @@ ParseNode * flattern_bin(ParseNode *); // eliminate right recursion of an binary
 				$$ = *newnode;
 			}
         | YY_COMPLEX
-            {printf("complex " );}
+            {
+				ParseNode * newnode = new ParseNode();
+				string strcplx = $1.fs.CurrentTerm.what;
+				int splitter = strcplx.find_first_of('_', 0);
+				newnode->fs.CurrentTerm = Term{ TokenMeta::Complex, "forcomplex(" + strcplx.substr(0, splitter) + ", " + strcplx.substr(splitter + 1) + ") "}; // complex
+				$$ = *newnode;
+			}
 
 		| error '\n'
 
@@ -204,6 +210,8 @@ ParseNode * flattern_bin(ParseNode *); // eliminate right recursion of an binary
 		| callable crlf
 			{
 				// may cause reduction-reduction conflict when use `variable` instead of `callable`
+				// TODO : i am a little strange that `integer::a, b, c` works well because i am afraid that callable will reduce to exp from here. however according to LR(1), `::` is not in FOLLOW(exp)
+				string x = $1.fs.CurrentTerm.what;
 				$$ = $1;
 			}
 
@@ -227,6 +235,10 @@ ParseNode * flattern_bin(ParseNode *); // eliminate right recursion of an binary
 				newnode = flattern_bin(newnode);
 				$$ = *newnode;
 				update_pos($$);
+			}
+		|
+			{
+				// TODO : argtable can also be empty
 			}
 	stmt : exp
 			{
@@ -551,6 +563,14 @@ ParseNode * flattern_bin(ParseNode *); // eliminate right recursion of an binary
 				$$ = *newnode;
 				update_pos($$);
 			}
+		|
+			{
+				/* no params */
+				ParseNode * newnode = new ParseNode();
+				newnode->fs.CurrentTerm = Term{ TokenMeta::NT_PARAMTABLE, "" };
+				$$ = *newnode;
+				update_pos($$);
+			}
 
 
 	if_stmt : YY_IF exp YY_THEN crlf suite YY_END YY_IF crlf
@@ -688,7 +708,12 @@ ParseNode * flattern_bin(ParseNode *); // eliminate right recursion of an binary
 						// for each variable in flatterned paramtable
 						param_name_typename.push_back(make_pair(prmtbl->child[i]->fs.CurrentTerm.what, "void")); // refer to function suite and determine type of params
 					}
-					prmtbl = prmtbl->child[1];
+					if (prmtbl->child.size() >= 2)
+					{
+						/* if prmtbl->child.size() == 0, this is an empty paramtable(this function takes no arguments) */
+						/* if the paramtable is not flatterned prmtbl->child[1] is a right-recursive paramtable node */
+						prmtbl = prmtbl->child[1];
+					}
 				} while (prmtbl->child.size() == 2 && prmtbl->child[1]->fs.CurrentTerm.token == TokenMeta::NT_PARAMTABLE);
 				/* result variable */
 				param_name_typename.push_back(make_pair($9.fs.CurrentTerm.what, "void"));
@@ -700,18 +725,24 @@ ParseNode * flattern_bin(ParseNode *); // eliminate right recursion of an binary
 					/* $12.child[i] => stmt */ /*  REF stmt for why stmt is a node always with 1 child(except for dummy stmt) */
 					if (stmti->child.size() == 1 && stmti->child[0]->fs.CurrentTerm.token == TokenMeta::NT_VARIABLEDEFINE) {
 						/* stmti->child[0] => var_def */
-						/* from stmti->child[0].child[1] is variable of this type */
+						/* from pn=stmti->child[0].child[0] is typename */
+						/* from pn=stmti->child[0].child[1] is all variables of this type */
 						ParseNode * pn = stmti->child[0]->child[1];
 						do {
 							// for all non-flatterned paramtable
 							for (int i = 0; i < pn->child.size(); i++)
 							{
 								// for each variable in flatterned paramtable
-								/* pn->child[i] is varname with initial value */
+								/* pn->child[i] is varname_i with initial value */
 								/* pn->child[i]->child[0] is varname string */
 								param_definition.push_back(pn->child[i]->child[0]);
 							}
-							pn = pn->child[1];
+							if (pn->child.size() >= 2)
+							{
+								/* if pn->child.size() == 0, this is an empty paramtable(this function takes no arguments) */
+								/* if the paramtable is not flatterned pn->child[1] is a right-recursive paramtable node */
+								pn = pn->child[1];
+							}
 						} while (pn->child.size() == 2 && pn->child[1]->fs.CurrentTerm.token == TokenMeta::NT_PARAMTABLE);
 					}
 				}

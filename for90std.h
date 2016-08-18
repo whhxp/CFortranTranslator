@@ -21,10 +21,16 @@ struct forcomplex {
 	const forcomplex operator+(const forcomplex & rhs);
 
 	forcomplex(double real, double imagine) : m_real(real), m_imagine(imagine) {}
+	forcomplex(std::string);
 protected:
 	double m_real;
 	double m_imagine;
 };
+
+template <class T, class ... Args>
+min_n(T x, Args... args) {
+	return min(x, args);
+}
 
 int test() {
 }
