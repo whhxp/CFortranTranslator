@@ -1,0 +1,245 @@
+         CHARACTER*80 RR
+         CHARACTER*20 rrrr
+	dimension jjf(500),IP(60)
+        COMMON KKK,KE,MX,NP,N,NX,NE,N2,N3,N4,N5,N6,N7,NV,N8,N9,EPS
+        COMMON /GA/ MA(26000),MB(26000),JR(3,19900)
+        COMMON /GB/ X(19900),Y(19900),Z(19900),DX(50),MDX
+        COMMON /GC/ KGSS(60),CD(60,12),EQ(19800),EMA(19800),EB(19800,2)
+        COMMON /GD/ LQ(60,6),HE(60),CK(30,3),SM(19800),RR0(19800)
+        COMMON /GE/ JS(26000),MN(50),IVL(50)
+        COMMON /GF/ AS(19800,24)
+        COMMON /GG/ RS(19800),RD(19800)
+        COMMON /GH/ R(19800,6),RM(19800,2),T(19800,6),U(29703),P(29703)
+        COMMON /GI/ NOD(2820),IFD(2820,3),NOFIX(2820),IFPRE(2820,3)
+	COMMON /GJ/ JV(60),CJ(60)
+	COMMON /GK/ EK(24,24)
+c        COMMON /GL/ AK(18600000),AD(26000)
+        COMMON /GM/ AJJ(19800,8),CNJ(8,3,8),ANJ(8,3),AQ(8,8)
+        COMMON /GN/ NN(19800,24),MS(19800),NFP(20)
+	COMMON /GP/ XS(50),YS(50),ZS(50),CR(50),RRS(50)
+        COMMON /GO/ KFM(19800,8),KNN(19800),JK(19800)
+c       COMMON /GQ/ DSTR(19800,6)
+        COMMON /GR/ HW(60,2),NM(60),MW(60,10)
+         REAL*8 AK,AD
+	character*8 char_time
+
+         write(*,*)' Input the name of file for 3-D FEM'
+         read(*,*)rrrr
+
+c	WRITE(*,*)' Goodman elememt or Chengduo Geote. Institute Element?'
+c	WRITE(*,*)' 1=Goodman elememt/No interface element'
+c	WRITE(*,*)' 2=Chengduo Institute Element'
+c	WRITE(*,*)'     YOUR CHOICE=?'
+c	READ(*,*)KZG
+
+	kzg=1
+        OPEN  (2,FILE=rrrr,STATUS='OLD')
+c        OPEN  (2,FILE='thin-ele.dat',STATUS='OLD')
+
+	call TIME(char_time)
+	print *, ' Start time: ', char_time
+         OPEN  (3,FILE='SFEM.DAT')
+         OPEN  (1,FILE='water.DAT')
+         OPEN  (7,STATUS='SCRATCH',FORM='UNFORMATTED')
+         OPEN  (8,STATUS='SCRATCH',FORM='UNFORMATTED')
+         OPEN  (9,STATUS='SCRATCH',FORM='UNFORMATTED')
+         OPEN (10,STATUS='SCRATCH',FORM='UNFORMATTED')
+         READ (2,10) RR
+         WRITE(3,11) RR
+         READ (2,*)  ISTATE
+         READ (2,*)  KKK,KE,NP,NX,NE,N2,N3,N4,N5,N6,N7,N8,EPS,KTE
+         WRITE(3,12) KKK,KE,NP,NX,NE,N2,N3,N4,N5,N6,N7,N8,EPS
+C-- KTE - indicator of thin element-
+	
+         MX=18600000
+	 IF(KE.EQ.3) MX=MX/2
+	 IF(KE.GE.4) MX=800
+         READ (2,*)  ((LQ(I,J),J=1,6),HE(I),I=1,NP)
+         WRITE(3,20) ((LQ(I,J),J=1,6),HE(I),I=1,NP)
+c------------ V97-------
+        IF (N6.NE.0) THEN
+        DO 101 I=1,NP
+	  IF (LQ(I,5).EQ.0) GOTO 101
+        READ (2,*) IP(I),(HW(I,J),J=1,2),NM(I),(MW(I,J),J=1,NM(I))
+C        IF (NM(I).GT.0) READ (2,*) (MW(I,J),J=1,NM(I))
+101     CONTINUE
+
+	DO I=1,NP
+        IF (LQ(I,5).NE.0) THEN
+	   NMI=NM(I)
+         WRITE(3,2)IP(I),(HW(I,J),J=1,2),NMI
+	   WRITE(3,*) (MW(I,J),J=1,NMI)
+	  ENDIF
+	ENDDO
+        ENDIF
+2       FORMAT(/50X,'CONTROL INFORMATION OF EVERY LAYER'/
+     *    (4X,I6,2F10.2,i5))
+C------------------------
+         READ (2,*)  (NML,(CD(I,J),J=1,12),KGSS(I),I=1,N2)
+         WRITE(3,30) ((CD(I,J),J=1,12),KGSS(I),I=1,N2)
+         IF(KKK.NE.2) GOTO 3
+         READ (2,*)  ((CK(I,J),J=1,3),I=1,n2)
+         WRITE(3,35) ((CK(I,J),J=1,3),I=1,n2)
+3        READ (2,*)  (M,(KFM(J,I),I=1,8),KNN(J),KLN,J=1,NE)
+         WRITE(3,40) (J,KNN(J),(KFM(J,I),I=1,8),J=1,NE)
+
+	goto 202
+c	if (N8.GT.0) THEN
+         do 1 ie=1,ne
+         nmt=knn(ie)
+         if (nmt.ge.25.and.nmt.le.28) then
+         ll1=kfm(ie,1)
+         ll2=kfm(ie,2)
+         ll3=kfm(ie,3)
+         ll4=kfm(ie,4)
+         ll5=kfm(ie,5)
+         ll6=kfm(ie,6)
+         ll7=kfm(ie,7)
+         ll8=kfm(ie,8)
+         kfm(ie,1)=ll1
+         kfm(ie,2)=ll2
+         kfm(ie,3)=ll6
+         kfm(ie,4)=ll5
+         kfm(ie,5)=ll4
+         kfm(ie,6)=ll3
+         kfm(ie,7)=ll7
+         kfm(ie,8)=ll8
+         endif
+         if (nmt.eq.9) then
+         ll1=kfm(ie,1)
+         ll2=kfm(ie,2)
+         ll3=kfm(ie,3)
+         ll4=kfm(ie,4)
+         ll5=kfm(ie,5)
+         ll6=kfm(ie,6)
+         ll7=kfm(ie,7)
+         ll8=kfm(ie,8)
+         kfm(ie,1)=ll4
+         kfm(ie,2)=ll3
+         kfm(ie,3)=ll2
+         kfm(ie,4)=ll1
+         kfm(ie,5)=ll8
+         kfm(ie,6)=ll7
+         kfm(ie,7)=ll6
+         kfm(ie,8)=ll5
+         endif
+
+1        continue
+202	continue
+c	endif
+
+         READ (2,*)  (M,X(I),Y(I),Z(I),I=1,NX)
+         WRITE(3,50) (I,X(I),Y(I),Z(I),I=1,NX)
+
+         IF (N5.EQ.0) GOTO 5
+         DO 4 I=1,N2
+         JV(I)=0
+4        CJ(I)=0.0
+         READ (2,*)  (M,JV(M),CJ(M),I=1,N8)
+C         WRITE(3,60) (I,JV(I),CJ(I),I=1,N2)
+c---   Can't canceled, JV() is used in PREP
+	 k=0
+	 do 118 ie=1,ne
+	 kn=knn(ie)
+	 if(jv(kn).eq.0) goto 118
+ 	 k=k+1
+c  	 jjf(k)=ie
+118	 continue
+5        IF(N7.EQ.0) GOTO 6
+         READ (2,*)  (NOD(I),(IFD(I,J),J=1,3),I=1,N7)
+         WRITE(3,70) (NOD(I),(IFD(I,J),J=1,3),I=1,N7)
+6        IF(N4.EQ.0) GOTO 8
+c         REWIND 10
+         CALL WAT(ISTATE,BP,MDIR,NS)
+
+c         IF (ISTATE.EQ.1) GOTO 8
+c         WRITE(3,80) (I,LQ(I,3),I=1,NP)
+c         WRITE(3,85)
+c         REWIND 10
+c         DO 7 I=1,N4
+c         READ (10) IE,ANJ
+c         WRITE(3,90) IE,ANJ
+c7	 continue
+8        CONTINUE
+         CLOSE (2,status='keep')
+	DO I=1,NX
+	K1=0
+	DO IE=1,NE
+	   DO J=1,8
+	     IF (I.EQ.KFM(IE,J)) K1=1
+	   ENDDO
+	ENDDO
+	K=0
+	DO J=1,N7
+	IF (I.EQ.NOD(J)) K=K+1
+	ENDDO
+	IF (K.NE.0.AND.K1.EQ.0) WRITE(0,*)'Fixed Node No. Err.:',I
+	IF (K.GT.1) WRITE(0,*)'Fixed Node No. Err.:',I
+	ENDDO
+c-----------------------------------------
+10       FORMAT(A80)
+99       FORMAT(A12)
+11       FORMAT(26X,A80)
+12       FORMAT(//50X,'CONTROL INFORMATER IN ALL'/16X,'KKK',
+     *    5X,'KE',5X,'NP',5X,'NX',5X,'NE',5X,'N2',5X,'N3',5X,'N4',
+     *    5X,'N5',5X,'N6',5X,'N7',5X,'N8',4X,'EPS'/(12X,12I7,F7.2))
+20       FORMAT(/50X,'CONTROL INFORMATION OF EVERY LAYER'/
+     *    (4X,6I16,F16.2))
+30       FORMAT(/50X,'MATERIAL PARAMETER'/(2X,F9.3,F10.1,4F9.3,F13.3,
+     *    5F9.3,I3))
+35       FORMAT(1X,'CK=',3F12.5)
+40       FORMAT(/50X,'ELEMENT INFORMATER'/2(1X,'(',I4,')',I4,8I6))
+50       FORMAT(/50X,'NODEL POINT COORDINATE'/3(3X,'(',I4,')',3F10.3))
+60       FORMAT(/50X,'GOODMAN ELEMENT INFORMATION'/5(7X,'(',I2,')',
+     *    I4,F8.2))
+70       FORMAT(/50X,'FIXED NODEL PLONT'/6(4X,'(',I4,')',3I3))
+80       FORMAT(/30X,'WATER LOAD'/10(4X,'(',I2,')',I4))
+85       FORMAT(/30X,'WATER PRESSURE'/)
+c90       FORMAT(60X,'ELEMENT NO=',I4/6X,12F9.0/6X,12F9.0)
+c90       FORMAT(50X,'ELEMENT NO=',I4/2X,6F3.0,6F7.0/2X,6F3.0,6F7.0)
+90       FORMAT(I6,7F6.0,6F6.0,6F6.0,6F6.0)
+100	 FORMAT(2X,6I10,F10.2,I10)
+110	 FORMAT(2X,10I10)
+120	 FORMAT(2X,I10,3F10.2)
+130	 FORMAT(2X,I10)
+         
+	   STOP '------- Congratulation!! You are successful!!! ------'
+         END
+
+         SUBROUTINE WAT(ISTATE,BP,MDIR,NS)
+         DIMENSION H(20,2),S(50,8,3),LP(50),NC(50),ND(50,20)
+	* ,xe(19800),ze(19800)
+        COMMON KKK,KE,MX,NP,N,NX,NE,N2,N3,N4
+        COMMON /GB/ X(19900),Y(19900),Z(19900),DX(50),MDX
+        COMMON /GD/ LQ(60,6),HE(60),CK(30,3),SM(19800),RR0(19800)
+        COMMON /GN/ NN(19800,24),MS(19800),NFP(20)
+        COMMON /GO/ KFM(19800,8),KNN(19800),JK(19800)
+	 READ (2,*) nnnnn
+         READ (2,*) MDIR,NW,NS,BP
+         WRITE(3,7) MDIR,NW,NS,BP
+7        FORMAT(/4X,'MDIR      NW      NS      BP'/3I8,F8.2)
+         READ (2,*) ((H(I,J),J=1,2),I=1,NW)
+         WRITE(3,8) ((H(I,J),J=1,2),I=1,NW)
+8        FORMAT(3X,'H=',2X,2F9.2,3X,2F9.2,3X,2F9.2)
+9        FORMAT(3X,'ND=',12I5)
+         DO 10 I=1,NS
+         READ (2,*) m,(ND(I,J),J=1,M)
+         WRITE(3,9) (ND(I,J),J=1,M)
+10       NC(I)=M
+
+	do ie=1,ne
+	do i=1,8
+      xe(ie)=xe(ie)+x(kfm(ie,i))/8.
+      ze(ie)=ze(ie)+z(kfm(ie,i))/8.
+	enddo
+	enddo
+
+	do i=1,ns
+	do j=1,nc(i)
+	write(1,100)xe(nd(i,j)),ze(nd(i,j)),nd(i,j)
+	enddo
+	enddo
+100	format(2f13.3,i6)
+         RETURN
+         END
+ 
